@@ -1,0 +1,45 @@
+:host {
+  display: block;
+}
+
+.album-tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 2px solid var(--bs-border-color);
+  overflow-x: auto;
+}
+
+.album-tab {
+  padding: 0.625rem 1.25rem;
+  border: none;
+  background: transparent;
+  color: var(--bs-secondary-color);
+  font-weight: 500;
+  text-decoration: none;
+  position: relative;
+  transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+
+.album-tab::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--bs-primary);
+  transform: scaleX(0);
+  transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.album-tab:hover {
+  color: var(--bs-primary);
+}
+
+.album-tab.active {
+  color: var(--bs-primary);
+}
+.album-tab.active::after {
+  transform: scaleX(1);
+}

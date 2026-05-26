@@ -1,0 +1,352 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="h4 mb-0">{{ 'ALBUM.GALERIA_TITULO' | translate }}</h2>
+  <button type="button" class="btn btn-primary btn-anim" (click)="abrirUpload()">
+    {{ 'ALBUM.BTN_ADICIONAR' | translate }}
+  </button>
+</div>
+
+@if (mensagem()) {
+  <div class="alert alert-success py-2 small alert-anim">{{ mensagem() }}</div>
+}
+@if (erro()) {
+  <div class="alert alert-danger py-2 small">{{ erro() }}</div>
+}
+
+<div class="row g-3">
+  <!-- Sidebar filtros -->
+  <aside class="col-lg-3">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <h6 class="text-uppercase text-muted small fw-bold mb-3">{{ 'ALBUM.FILTROS' | translate }}</h6>
+
+        @if (emocoes().length) {
+          <div class="filtro-grupo">
+            <div class="filtro-label">{{ 'ALBUM.FILTRO_EMOCOES' | translate }}</div>
+            @for (e of emocoes(); track e.id) {
+              <label class="chip"
+                     [class.active]="emocoesSel().has(e.id)"
+                     [style.borderColor]="emocoesSel().has(e.id) ? e.cor : null"
+                     [style.background]="emocoesSel().has(e.id) ? e.cor + '22' : null">
+                <input type="checkbox" hidden [checked]="emocoesSel().has(e.id)" (change)="toggleEmocao(e.id)" />
+                <span class="chip-dot" [style.background]="e.cor || '#888'"></span>
+                {{ e.nome }}
+              </label>
+            }
+          </div>
+        }
+
+        @if (tags().length) {
+          <div class="filtro-grupo">
+            <div class="filtro-label">{{ 'ALBUM.FILTRO_TAGS' | translate }}</div>
+            @for (t of tags(); track t.id) {
+              <label class="chip" [class.active]="tagsSel().has(t.id)">
+                <input type="checkbox" hidden [checked]="tagsSel().has(t.id)" (change)="toggleTag(t.id)" />
+                #{{ t.nome }}
+              </label>
+            }
+          </div>
+        }
+
+        <div class="filtro-grupo">
+          <div class="filtro-label">{{ 'ALBUM.FILTRO_CLIENTE' | translate }}</div>
+          <select class="form-select form-select-sm"
+                  [ngModel]="clienteSel()"
+                  (ngModelChange)="setCliente($event)">
+            <option [ngValue]="null">{{ 'ALBUM.FILTRO_CLIENTE_TODOS' | translate }}</option>
+            @for (c of clientes(); track c.id) {
+              <option [ngValue]="c.id">{{ c.nome }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="filtro-grupo">
+          <div class="filtro-label">{{ 'ALBUM.FILTRO_FAVORITISMO' | translate }}</div>
+          <div class="seg-control">
+            <button type="button" class="seg-btn" [class.active]="favSel() === ''" (click)="setFav('')">{{ 'ALBUM.FAV_TODOS' | translate }}</button>
+            <button type="button" class="seg-btn" [class.active]="favSel() === 'amados'" (click)="setFav('amados')">{{ 'ALBUM.FAV_AMADOS' | translate }}</button>
+            <button type="button" class="seg-btn" [class.active]="favSel() === 'medianos'" (click)="setFav('medianos')">{{ 'ALBUM.FAV_MEDIANOS' | translate }}</button>
+            <button type="button" class="seg-btn" [class.active]="favSel() === 'menos'" (click)="setFav('menos')">{{ 'ALBUM.FAV_MENOS' | translate }}</button>
+          </div>
+        </div>
+
+        <div class="filtro-grupo">
+          <div class="filtro-label">{{ 'ALBUM.ORDEM' | translate }}</div>
+          <select class="form-select form-select-sm"
+                  [ngModel]="orderSel()"
+                  (ngModelChange)="setOrder($event)">
+            <option value="recent">{{ 'ALBUM.ORDEM_RECENT' | translate }}</option>
+            <option value="likes_desc">{{ 'ALBUM.ORDEM_LIKES_DESC' | translate }}</option>
+            <option value="likes_asc">{{ 'ALBUM.ORDEM_LIKES_ASC' | translate }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Grid de fotos -->
+  <section class="col-lg-9">
+    @if (carregando()) {
+      <div class="text-center text-muted py-5">
+        <div class="spinner-border text-primary"></div>
+        <div class="mt-2">{{ 'ALBUM.CARREGANDO' | translate }}</div>
+      </div>
+    } @else if (fotos().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">🖼️</div>
+        <p class="text-muted">{{ 'ALBUM.VAZIO' | translate }}</p>
+      </div>
+    } @else {
+      <div class="foto-grid">
+        @for (foto of fotos(); track foto.id; let i = $index) {
+          <article class="foto-card"
+                   [style.animationDelay]="(i * 35) + 'ms'"
+                   (click)="abrirDetalhe(foto)">
+            <div class="foto-thumb-wrap">
+              <img appAuthImg [appAuthImg]="imagemUrl(foto.id)" alt="" class="foto-thumb" />
+              <div class="foto-overlay"></div>
+              <span class="foto-emocao-badge"
+                    [style.background]="foto.emocao.cor || 'var(--bs-primary)'">
+                {{ foto.emocao.nome }}
+              </span>
+              <button type="button"
+                      class="like-btn"
+                      [class.bump]="likeBumpId() === foto.id"
+                      [title]="'ALBUM.BTN_LIKE_TITLE' | translate"
+                      (click)="like(foto, $event)">
+                <span class="heart">♥</span>
+                <span class="like-count">{{ foto.likesCount }}</span>
+              </button>
+            </div>
+            <div class="foto-info">
+              <div class="foto-titulo">{{ foto.titulo || '—' }}</div>
+              <div class="foto-meta small text-muted">
+                @if (foto.cliente) { {{ foto.cliente.nome }} }
+                @if (foto.tags.length) {
+                  <span class="ms-1">
+                    @for (t of foto.tags.slice(0, 3); track t.id) {
+                      <span class="tag-mini">#{{ t.nome }}</span>
+                    }
+                    @if (foto.tags.length > 3) { <span>+{{ foto.tags.length - 3 }}</span> }
+                  </span>
+                }
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </section>
+</div>
+
+<!-- ===== Modal Upload ===== -->
+@if (uploadAberto()) {
+  <div class="modal-backdrop-custom" (click)="fecharUpload()"></div>
+  <div class="modal-custom">
+    <div class="modal-dialog modal-dialog-centered modal-lg" (click)="$event.stopPropagation()">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ 'ALBUM.UPLOAD_TITULO' | translate }}</h5>
+          <button type="button" class="btn-close" (click)="fecharUpload()"></button>
+        </div>
+        <div class="modal-body">
+          @if (uploadErro()) {
+            <div class="alert alert-danger py-2 small">{{ uploadErro() }}</div>
+          }
+
+          <div class="upload-zone" [class.tem-arquivo]="uploadFile()">
+            @if (uploadPreview()) {
+              <img [src]="uploadPreview()" alt="preview" class="upload-preview" />
+            } @else {
+              <div class="upload-empty">
+                <div class="upload-icon">📷</div>
+                <p class="mb-0">{{ 'ALBUM.UPLOAD_ESCOLHA' | translate }}</p>
+              </div>
+            }
+            <label class="btn btn-outline-primary btn-anim mt-3">
+              {{ (uploadFile() ? 'ALBUM.UPLOAD_TROCAR' : 'ALBUM.UPLOAD_ESCOLHA') | translate }}
+              <input type="file" hidden accept="image/jpeg,image/png,image/webp" (change)="onArquivoEscolhido($event)" />
+            </label>
+          </div>
+
+          <div class="row g-3 mt-1">
+            <div class="col-md-6">
+              <label class="form-label small">{{ 'ALBUM.UPLOAD_EMOCAO' | translate }}</label>
+              <select class="form-select"
+                      [ngModel]="uploadEmocaoId()"
+                      (ngModelChange)="onUploadEmocaoChange($event)">
+                @for (e of emocoes(); track e.id) {
+                  <option [ngValue]="e.id">{{ e.nome }}</option>
+                }
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small">{{ 'ALBUM.UPLOAD_CLIENTE' | translate }}</label>
+              <select class="form-select"
+                      [ngModel]="uploadClienteId()"
+                      (ngModelChange)="onUploadClienteChange($event)">
+                <option [ngValue]="null">{{ 'ALBUM.UPLOAD_CLIENTE_NENHUM' | translate }}</option>
+                @for (c of clientes(); track c.id) {
+                  <option [ngValue]="c.id">{{ c.nome }}</option>
+                }
+              </select>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label small">{{ 'ALBUM.UPLOAD_TITULO_LABEL' | translate }}</label>
+              <input type="text" class="form-control" maxlength="150"
+                     [ngModel]="uploadTitulo()" (ngModelChange)="uploadTitulo.set($event)" />
+            </div>
+            <div class="col-md-12">
+              <label class="form-label small">{{ 'ALBUM.UPLOAD_DESCRICAO' | translate }}</label>
+              <textarea class="form-control" rows="2" maxlength="500"
+                        [ngModel]="uploadDescricao()" (ngModelChange)="uploadDescricao.set($event)"></textarea>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label small">{{ 'ALBUM.UPLOAD_TAGS' | translate }}</label>
+              <div class="text-muted small mb-1">{{ 'ALBUM.UPLOAD_TAGS_HINT' | translate }}</div>
+              <div class="d-flex flex-wrap gap-1">
+                @for (t of tags(); track t.id) {
+                  <label class="chip chip-sm" [class.active]="uploadTagsSel().has(t.id)">
+                    <input type="checkbox" hidden [checked]="uploadTagsSel().has(t.id)" (change)="toggleUploadTag(t.id)" />
+                    #{{ t.nome }}
+                  </label>
+                }
+              </div>
+              <div class="input-group input-group-sm mt-2">
+                <input type="text" class="form-control"
+                       [placeholder]="'ALBUM.UPLOAD_NOVA_TAG' | translate"
+                       [ngModel]="uploadNovaTagNome()" (ngModelChange)="uploadNovaTagNome.set($event)" />
+                <button type="button" class="btn btn-outline-primary btn-anim" (click)="criarNovaTag()">
+                  {{ 'ALBUM.UPLOAD_ADICIONAR' | translate }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="fecharUpload()">{{ 'ALBUM.BTN_FECHAR' | translate }}</button>
+          <button type="button" class="btn btn-primary btn-anim" (click)="enviarUpload()" [disabled]="uploadEnviando() || !uploadFile()">
+            @if (uploadEnviando()) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+            }
+            {{ 'ALBUM.UPLOAD_ENVIAR' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ===== Modal Detalhe ===== -->
+@if (fotoDetalhe(); as foto) {
+  <div class="modal-backdrop-custom" (click)="fecharDetalhe()"></div>
+  <div class="modal-custom">
+    <div class="modal-dialog modal-dialog-centered modal-xl" (click)="$event.stopPropagation()">
+      <div class="modal-content border-0 shadow-lg detalhe-content">
+        <div class="row g-0">
+          <div class="col-md-7 detalhe-imagem-col">
+            <img appAuthImg [appAuthImg]="imagemUrl(foto.id)" alt="" class="detalhe-imagem" />
+          </div>
+          <div class="col-md-5 detalhe-painel">
+            <div class="d-flex justify-content-between align-items-start">
+              @if (editando()) {
+                <input type="text" class="form-control form-control-lg"
+                       [ngModel]="editTitulo()" (ngModelChange)="editTitulo.set($event)"
+                       [placeholder]="'ALBUM.UPLOAD_TITULO_LABEL' | translate" />
+              } @else {
+                <h4 class="mb-0">{{ foto.titulo || '—' }}</h4>
+              }
+              <button type="button" class="btn-close" (click)="fecharDetalhe()"></button>
+            </div>
+
+            <div class="mt-2 mb-3">
+              <span class="badge"
+                    [style.background]="foto.emocao.cor || 'var(--bs-primary)'">
+                {{ foto.emocao.nome }}
+              </span>
+              @if (foto.cliente) {
+                <span class="badge bg-secondary ms-1">{{ foto.cliente.nome }}</span>
+              }
+            </div>
+
+            <div class="like-bar"
+                 [class.bump]="likeBumpId() === foto.id">
+              <button type="button" class="like-bar-btn" (click)="like(foto, $event)" [title]="'ALBUM.BTN_LIKE_TITLE' | translate">
+                <span class="heart-big">♥</span>
+              </button>
+              <div class="like-bar-info">
+                <div class="like-bar-count">{{ foto.likesCount }}</div>
+                <div class="small text-muted">
+                  {{ categoriaLabel(foto.categoria) | translate }}
+                </div>
+              </div>
+              @if (foto.likesCount > 0) {
+                <button type="button" class="btn btn-link btn-sm text-danger ms-auto" (click)="unlike(foto, $event)" [title]="'ALBUM.BTN_UNLIKE_TITLE' | translate">−1</button>
+              }
+            </div>
+
+            @if (editando()) {
+              <div class="mt-3">
+                <label class="form-label small">{{ 'ALBUM.UPLOAD_DESCRICAO' | translate }}</label>
+                <textarea class="form-control" rows="2" maxlength="500"
+                          [ngModel]="editDescricao()" (ngModelChange)="editDescricao.set($event)"></textarea>
+              </div>
+              <div class="mt-3">
+                <label class="form-label small">{{ 'ALBUM.UPLOAD_EMOCAO' | translate }}</label>
+                <select class="form-select form-select-sm"
+                        [ngModel]="editEmocaoId()"
+                        (ngModelChange)="onEditEmocaoChange($event)">
+                  @for (e of emocoes(); track e.id) {
+                    <option [ngValue]="e.id">{{ e.nome }}</option>
+                  }
+                </select>
+              </div>
+              <div class="mt-2">
+                <label class="form-label small">{{ 'ALBUM.UPLOAD_CLIENTE' | translate }}</label>
+                <select class="form-select form-select-sm"
+                        [ngModel]="editClienteId()"
+                        (ngModelChange)="onEditClienteChange($event)">
+                  <option [ngValue]="null">{{ 'ALBUM.UPLOAD_CLIENTE_NENHUM' | translate }}</option>
+                  @for (c of clientes(); track c.id) {
+                    <option [ngValue]="c.id">{{ c.nome }}</option>
+                  }
+                </select>
+              </div>
+              <div class="mt-2">
+                <label class="form-label small">{{ 'ALBUM.UPLOAD_TAGS' | translate }}</label>
+                <div class="d-flex flex-wrap gap-1">
+                  @for (t of tags(); track t.id) {
+                    <label class="chip chip-sm" [class.active]="editTagsSel().has(t.id)">
+                      <input type="checkbox" hidden [checked]="editTagsSel().has(t.id)" (change)="toggleEditTag(t.id)" />
+                      #{{ t.nome }}
+                    </label>
+                  }
+                </div>
+              </div>
+
+              <div class="d-flex gap-2 mt-3">
+                <button type="button" class="btn btn-outline-secondary btn-sm" (click)="cancelarEdicao()">{{ 'CLIENTES.BTN_CANCELAR' | translate }}</button>
+                <button type="button" class="btn btn-primary btn-anim btn-sm ms-auto" (click)="salvarEdicao()">{{ 'ALBUM.BTN_SALVAR' | translate }}</button>
+              </div>
+            } @else {
+              @if (foto.descricao) {
+                <p class="small mt-2">{{ foto.descricao }}</p>
+              }
+              @if (foto.tags.length) {
+                <div class="mt-3 d-flex flex-wrap gap-1">
+                  @for (t of foto.tags; track t.id) {
+                    <span class="tag-mini-static">#{{ t.nome }}</span>
+                  }
+                </div>
+              }
+
+              <div class="d-flex gap-2 mt-4">
+                <button type="button" class="btn btn-outline-primary btn-anim btn-sm" (click)="comecarEdicao()">{{ 'ALBUM.BTN_EDITAR' | translate }}</button>
+                <button type="button" class="btn btn-outline-danger btn-anim btn-sm ms-auto" (click)="excluirFoto()">{{ 'ALBUM.BTN_EXCLUIR' | translate }}</button>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}
