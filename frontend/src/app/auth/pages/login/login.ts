@@ -3,12 +3,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { AuthService } from '../../auth.service';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslateModule],
   templateUrl: './login.html',
   styleUrl: './login.scss'
 })
@@ -17,6 +18,7 @@ export class Login {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly translate = inject(TranslateService);
 
   protected readonly enviando = signal(false);
   protected readonly erro = signal<string | null>(null);
@@ -43,11 +45,11 @@ export class Login {
       error: (err: HttpErrorResponse) => {
         this.enviando.set(false);
         if (err.status === 401) {
-          this.erro.set('Email ou senha incorretos.');
+          this.erro.set(this.translate.instant('AUTH.ERRO_CREDENCIAIS'));
         } else if (err.status === 0) {
-          this.erro.set('Nao foi possivel conectar ao servidor. Verifique se o backend esta no ar.');
+          this.erro.set(this.translate.instant('AUTH.ERRO_CONEXAO'));
         } else {
-          this.erro.set(err.error?.message || 'Erro ao fazer login.');
+          this.erro.set(err.error?.message || this.translate.instant('AUTH.ERRO_CREDENCIAIS'));
         }
       }
     });

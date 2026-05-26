@@ -1,8 +1,44 @@
 @use 'bootstrap/scss/bootstrap';
 
+/* ============================================================
+   Variáveis de tema (light é default do Bootstrap, dark customizado)
+   ============================================================ */
+:root {
+  --altis-bg: #f5f6f8;
+  --altis-text: #212529;
+  --altis-card-bg: #ffffff;
+  --altis-shadow-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-bs-theme="dark"] {
+  --altis-bg: #1a1d21;
+  --altis-text: #e9ecef;
+  --altis-card-bg: #25282d;
+  --altis-shadow-color: rgba(0, 0, 0, 0.35);
+}
+
+/* ============================================================
+   Font size escalável (4 níveis)
+   - 'rem' do Bootstrap escala junto com o html font-size
+   ============================================================ */
+html.font-sm { font-size: 14px; }
+html.font-md { font-size: 16px; }  /* padrão */
+html.font-lg { font-size: 18px; }
+html.font-xl { font-size: 20px; }
+
 html, body {
   height: 100%;
-  background-color: #f5f6f8;
+  background-color: var(--altis-bg);
+  color: var(--altis-text);
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1),
+              color 250ms cubic-bezier(0.4, 0, 0.2, 1),
+              font-size 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card {
+  background-color: var(--altis-card-bg);
+  box-shadow: 0 2px 6px var(--altis-shadow-color);
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .is-invalid + .invalid-feedback {
@@ -14,6 +50,38 @@ html, body {
   color: var(--bs-danger);
 }
 
-.card {
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+/* ============================================================
+   Botões com micro-interação
+   ============================================================ */
+.btn {
+  transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================
+   Inputs com focus suave
+   ============================================================ */
+.form-control,
+.form-select {
+  transition: border-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================
+   Tabela: hover suave
+   ============================================================ */
+.table-hover tbody tr {
+  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================
+   Respeitar prefers-reduced-motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

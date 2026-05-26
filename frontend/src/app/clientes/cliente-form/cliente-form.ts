@@ -3,6 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { NgxMaskDirective } from 'ngx-mask';
 
 import { ApiErrorResponse, Cliente } from '../cliente.model';
@@ -11,7 +12,7 @@ import { cpfValidator, telefoneValidator } from '../../shared/validators/cpf.val
 
 @Component({
   selector: 'app-cliente-form',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, NgxMaskDirective],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, NgxMaskDirective, TranslateModule],
   templateUrl: './cliente-form.html',
   styleUrl: './cliente-form.scss'
 })
@@ -20,6 +21,7 @@ export class ClienteForm implements OnInit {
   private readonly clienteService = inject(ClienteService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
 
   protected readonly carregando = signal(false);
   protected readonly salvando = signal(false);
@@ -126,7 +128,8 @@ export class ClienteForm implements OnInit {
     obs$.subscribe({
       next: () => {
         this.salvando.set(false);
-        this.router.navigate(['/clientes'], { state: { mensagem: id ? 'Cliente atualizado com sucesso.' : 'Cliente cadastrado com sucesso.' } });
+        const key = id ? 'CLIENTES.ATUALIZADO_SUCESSO' : 'CLIENTES.CRIADO_SUCESSO';
+        this.router.navigate(['/clientes'], { state: { mensagem: this.translate.instant(key) } });
       },
       error: (err: HttpErrorResponse) => {
         this.salvando.set(false);

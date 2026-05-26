@@ -40,6 +40,10 @@ export const routes: Routes = [
       {
         path: 'perfil',
         loadComponent: () => import('./configuracoes/perfil/perfil').then(m => m.Perfil)
+      },
+      {
+        path: 'acessibilidade',
+        loadComponent: () => import('./configuracoes/acessibilidade/acessibilidade').then(m => m.Acessibilidade)
       }
     ]
   },

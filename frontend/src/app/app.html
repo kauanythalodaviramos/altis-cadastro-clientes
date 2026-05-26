@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
   <div class="container">
     <a class="navbar-brand fw-semibold" [routerLink]="auth.isAuthenticated() ? '/clientes' : '/login'">
-      Cadastro de Clientes
+      {{ 'APP.TITLE' | translate }}
     </a>
 
     @if (auth.isAuthenticated()) {
@@ -10,7 +10,7 @@
            routerLinkActive="active"
            [routerLinkActiveOptions]="{ exact: false }"
            class="btn btn-outline-light btn-sm btn-nav">
-          Clientes
+          {{ 'APP.NAV_CLIENTES' | translate }}
         </a>
 
         <div class="dropdown">
@@ -19,15 +19,19 @@
                   data-bs-toggle="dropdown"
                   aria-expanded="false">
             <span class="avatar-circle d-flex align-items-center justify-content-center">
-              {{ (auth.user()?.nome || '?').charAt(0).toUpperCase() }}
+              @if (auth.user()?.temFoto) {
+                <img [src]="auth.fotoUrl()" alt="" class="avatar-img" />
+              } @else {
+                {{ (auth.user()?.nome || '?').charAt(0).toUpperCase() }}
+              }
             </span>
             <span class="d-none d-md-inline">{{ auth.user()?.nome }}</span>
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
             <li><span class="dropdown-item-text small text-muted">{{ auth.user()?.email }}</span></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" routerLink="/configuracoes">Configuracoes</a></li>
-            <li><button class="dropdown-item" type="button" (click)="sair()">Sair</button></li>
+            <li><a class="dropdown-item" routerLink="/configuracoes">{{ 'APP.NAV_CONFIG' | translate }}</a></li>
+            <li><button class="dropdown-item" type="button" (click)="sair()">{{ 'APP.NAV_SAIR' | translate }}</button></li>
           </ul>
         </div>
       </div>

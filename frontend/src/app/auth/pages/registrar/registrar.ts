@@ -3,12 +3,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { AuthService } from '../../auth.service';
 
 @Component({
   selector: 'app-registrar',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslateModule],
   templateUrl: './registrar.html',
   styleUrl: './registrar.scss'
 })
@@ -16,6 +17,7 @@ export class Registrar {
   private readonly fb = inject(FormBuilder);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
 
   protected readonly enviando = signal(false);
   protected readonly erroGeral = signal<string | null>(null);
@@ -49,7 +51,7 @@ export class Registrar {
     }).subscribe({
       next: () => {
         this.enviando.set(false);
-        this.router.navigate(['/clientes'], { state: { mensagem: 'Conta criada com sucesso! Bem-vinda.' } });
+        this.router.navigate(['/clientes'], { state: { mensagem: this.translate.instant('AUTH.BEM_VINDA') } });
       },
       error: (err: HttpErrorResponse) => {
         this.enviando.set(false);

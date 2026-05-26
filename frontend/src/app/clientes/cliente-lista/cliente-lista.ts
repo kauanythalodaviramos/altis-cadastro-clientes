@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { NgxMaskPipe } from 'ngx-mask';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 
@@ -10,13 +11,14 @@ import { ClienteService } from '../cliente.service';
 
 @Component({
   selector: 'app-cliente-lista',
-  imports: [CommonModule, FormsModule, RouterLink, NgxMaskPipe],
+  imports: [CommonModule, FormsModule, RouterLink, NgxMaskPipe, TranslateModule],
   templateUrl: './cliente-lista.html',
   styleUrl: './cliente-lista.scss'
 })
 export class ClienteLista implements OnInit {
   private readonly clienteService = inject(ClienteService);
   private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
   private readonly filtroInput$ = new Subject<string>();
 
   protected readonly clientes = signal<Cliente[]>([]);
@@ -58,7 +60,7 @@ export class ClienteLista implements OnInit {
         this.carregando.set(false);
       },
       error: () => {
-        this.erro.set('Nao foi possivel carregar a lista. Verifique se o backend esta no ar (porta 8080).');
+        this.erro.set(this.translate.instant('CLIENTES.ERRO_LISTA'));
         this.carregando.set(false);
       }
     });
@@ -67,16 +69,16 @@ export class ClienteLista implements OnInit {
   excluir(cliente: Cliente): void {
     if (!cliente.id) return;
     const nome = cliente.nome;
-    const ok = window.confirm(`Excluir o cliente "${nome}"? Esta acao nao pode ser desfeita.`);
+    const ok = window.confirm(this.translate.instant('CLIENTES.CONFIRMAR_EXCLUIR', { nome }));
     if (!ok) return;
 
     this.clienteService.excluir(cliente.id).subscribe({
       next: () => {
-        this.mostrarMensagem(`Cliente "${nome}" excluido com sucesso.`);
+        this.mostrarMensagem(this.translate.instant('CLIENTES.EXCLUIDO_SUCESSO', { nome }));
         this.buscar(this.filtro());
       },
       error: () => {
-        this.erro.set('Erro ao excluir o cliente.');
+        this.erro.set(this.translate.instant('CLIENTES.ERRO_LISTA'));
       }
     });
   }

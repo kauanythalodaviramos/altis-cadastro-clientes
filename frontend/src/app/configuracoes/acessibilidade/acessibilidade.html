@@ -1,0 +1,80 @@
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-4">
+    <h2 class="h5 mb-1">{{ 'CONFIG.ACESSIBILIDADE_TITULO' | translate }}</h2>
+    <p class="text-muted small mb-4">{{ 'CONFIG.ACESSIBILIDADE_SUBTITULO' | translate }}</p>
+
+    <!-- Tema -->
+    <section class="config-section">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+          <h3 class="h6 mb-0">{{ 'CONFIG.SEC_TEMA' | translate }}</h3>
+          <p class="text-muted small mb-0">{{ 'CONFIG.SEC_TEMA_DESC' | translate }}</p>
+        </div>
+      </div>
+      <div class="option-grid">
+        <button type="button"
+                class="option-card"
+                [class.active]="theme.theme() === 'light'"
+                (click)="setTheme('light')">
+          <div class="option-preview light-preview">
+            <div class="preview-dot"></div>
+          </div>
+          <span class="option-label">{{ 'CONFIG.TEMA_CLARO' | translate }}</span>
+        </button>
+        <button type="button"
+                class="option-card"
+                [class.active]="theme.theme() === 'dark'"
+                (click)="setTheme('dark')">
+          <div class="option-preview dark-preview">
+            <div class="preview-dot"></div>
+          </div>
+          <span class="option-label">{{ 'CONFIG.TEMA_ESCURO' | translate }}</span>
+        </button>
+      </div>
+    </section>
+
+    <hr class="my-4">
+
+    <!-- Tamanho fonte -->
+    <section class="config-section">
+      <h3 class="h6 mb-0">{{ 'CONFIG.SEC_FONTE' | translate }}</h3>
+      <p class="text-muted small mb-3">{{ 'CONFIG.SEC_FONTE_DESC' | translate }}</p>
+
+      <div class="font-segmented">
+        @for (f of fontes; track f.level) {
+          <button type="button"
+                  class="font-btn"
+                  [class.active]="font.level() === f.level"
+                  (click)="setFont(f.level)">
+            <span class="font-letter" [style.fontSize]="f.size">A</span>
+            <span class="small">{{ f.label | translate }}</span>
+          </button>
+        }
+      </div>
+
+      <div class="font-preview mt-3 p-3 rounded">
+        <p class="mb-0">{{ 'CONFIG.PREVIEW_TEXTO' | translate }}</p>
+      </div>
+    </section>
+
+    <hr class="my-4">
+
+    <!-- Idioma -->
+    <section class="config-section">
+      <h3 class="h6 mb-0">{{ 'CONFIG.SEC_IDIOMA' | translate }}</h3>
+      <p class="text-muted small mb-3">{{ 'CONFIG.SEC_IDIOMA_DESC' | translate }}</p>
+
+      <div class="option-grid">
+        @for (l of idiomas; track l.code) {
+          <button type="button"
+                  class="option-card lang-card"
+                  [class.active]="lang.current() === l.code"
+                  (click)="setLang(l.code)">
+            <div class="lang-flag">{{ l.flag }}</div>
+            <span class="option-label">{{ l.label | translate }}</span>
+          </button>
+        }
+      </div>
+    </section>
+  </div>
+</div>

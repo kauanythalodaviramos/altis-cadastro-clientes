@@ -1,7 +1,7 @@
 <div class="card border-0 shadow-sm">
   <div class="card-body p-4">
-    <h2 class="h5 mb-1">Editar perfil</h2>
-    <p class="text-muted small mb-4">Atualize suas informacoes pessoais e foto.</p>
+    <h2 class="h5 mb-1">{{ 'CONFIG.PERFIL_TITULO' | translate }}</h2>
+    <p class="text-muted small mb-4">{{ 'CONFIG.PERFIL_SUBTITULO' | translate }}</p>
 
     @if (mensagem()) {
       <div class="alert alert-success py-2 small alert-anim">{{ mensagem() }}</div>
@@ -14,7 +14,7 @@
     <div class="d-flex align-items-center gap-3 mb-4 avatar-block">
       <div class="avatar-big">
         @if (fotoExibida()) {
-          <img [src]="fotoExibida()" alt="Avatar" />
+          <img [src]="fotoExibida()" alt="" />
         } @else {
           <span>{{ (auth.user()?.nome || '?').charAt(0).toUpperCase() }}</span>
         }
@@ -26,15 +26,15 @@
       </div>
       <div class="d-flex flex-column gap-2">
         <label class="btn btn-outline-primary btn-sm btn-anim mb-0">
-          @if (auth.user()?.temFoto) { Trocar foto } @else { Adicionar foto }
+          {{ (auth.user()?.temFoto ? 'CONFIG.BTN_TROCAR_FOTO' : 'CONFIG.BTN_ADD_FOTO') | translate }}
           <input type="file" hidden accept="image/jpeg,image/png,image/webp" (change)="onArquivoSelecionado($event)" />
         </label>
         @if (auth.user()?.temFoto) {
           <button type="button" class="btn btn-outline-danger btn-sm btn-anim" (click)="removerFoto()">
-            Remover foto
+            {{ 'CONFIG.BTN_REMOVER_FOTO' | translate }}
           </button>
         }
-        <div class="form-text small">JPG, PNG ou WebP, ate 5MB.</div>
+        <div class="form-text small">{{ 'CONFIG.FOTO_HINT' | translate }}</div>
       </div>
     </div>
 
@@ -42,7 +42,7 @@
     <form [formGroup]="form" (ngSubmit)="salvarPerfil()" novalidate>
       <div class="row g-3">
         <div class="col-md-12">
-          <label class="form-label">Nome</label>
+          <label class="form-label">{{ 'AUTH.NOME' | translate }}</label>
           <input type="text" class="form-control"
                  formControlName="nome"
                  [class.is-invalid]="campoInvalido('nome')" />
@@ -52,7 +52,7 @@
         </div>
 
         <div class="col-md-12">
-          <label class="form-label">Email</label>
+          <label class="form-label">{{ 'AUTH.EMAIL' | translate }}</label>
           <input type="email" class="form-control"
                  formControlName="email"
                  [class.is-invalid]="campoInvalido('email')" />
@@ -64,9 +64,9 @@
         @if (emailMudou()) {
           <div class="col-md-12 senha-confirma-block">
             <div class="alert alert-warning py-2 small mb-2">
-              Voce esta alterando o email. Confirme sua senha atual.
+              {{ 'CONFIG.ALERTA_EMAIL_MUDOU' | translate }}
             </div>
-            <label class="form-label">Senha atual</label>
+            <label class="form-label">{{ 'CONFIG.SENHA_ATUAL' | translate }}</label>
             <input type="password" class="form-control"
                    formControlName="senhaAtual"
                    autocomplete="current-password"
@@ -80,13 +80,13 @@
 
       <div class="d-flex justify-content-between align-items-center mt-4">
         <button type="button" class="btn btn-outline-secondary btn-anim" (click)="abrirModalSenha()">
-          Alterar senha
+          {{ 'CONFIG.BTN_ALTERAR_SENHA' | translate }}
         </button>
         <button type="submit" class="btn btn-primary btn-anim" [disabled]="salvando()">
           @if (salvando()) {
             <span class="spinner-border spinner-border-sm me-2"></span>
           }
-          Salvar alteracoes
+          {{ 'CONFIG.BTN_SALVAR' | translate }}
         </button>
       </div>
     </form>
@@ -100,7 +100,7 @@
     <div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
       <div class="modal-content border-0 shadow-lg">
         <div class="modal-header">
-          <h5 class="modal-title">Alterar senha</h5>
+          <h5 class="modal-title">{{ 'CONFIG.MODAL_SENHA_TITULO' | translate }}</h5>
           <button type="button" class="btn-close" (click)="fecharModalSenha()"></button>
         </div>
         <form [formGroup]="senhaForm" (ngSubmit)="alterarSenha()" novalidate>
@@ -109,7 +109,7 @@
               <div class="alert alert-danger py-2 small">{{ mensagemSenha() }}</div>
             }
             <div class="mb-3">
-              <label class="form-label">Senha atual</label>
+              <label class="form-label">{{ 'CONFIG.SENHA_ATUAL' | translate }}</label>
               <input type="password" class="form-control"
                      formControlName="senhaAtual"
                      autocomplete="current-password"
@@ -119,7 +119,7 @@
               }
             </div>
             <div class="mb-3">
-              <label class="form-label">Nova senha</label>
+              <label class="form-label">{{ 'CONFIG.NOVA_SENHA' | translate }}</label>
               <input type="password" class="form-control"
                      formControlName="senhaNova"
                      autocomplete="new-password"
@@ -127,11 +127,11 @@
               @if (campoSenhaInvalido('senhaNova')) {
                 <div class="invalid-feedback">{{ mensagemErroSenha('senhaNova') }}</div>
               } @else {
-                <div class="form-text small">Minimo 8 caracteres, com letra e numero.</div>
+                <div class="form-text small">{{ 'CONFIG.NOVA_SENHA_HINT' | translate }}</div>
               }
             </div>
             <div class="mb-1">
-              <label class="form-label">Confirmar nova senha</label>
+              <label class="form-label">{{ 'CONFIG.CONFIRMAR_NOVA' | translate }}</label>
               <input type="password" class="form-control"
                      formControlName="confirmarSenha"
                      autocomplete="new-password"
@@ -142,12 +142,12 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-outline-secondary" (click)="fecharModalSenha()">Cancelar</button>
+            <button type="button" class="btn btn-outline-secondary" (click)="fecharModalSenha()">{{ 'CLIENTES.BTN_CANCELAR' | translate }}</button>
             <button type="submit" class="btn btn-primary btn-anim" [disabled]="alterandoSenha()">
               @if (alterandoSenha()) {
                 <span class="spinner-border spinner-border-sm me-2"></span>
               }
-              Alterar
+              {{ 'CONFIG.BTN_ALTERAR' | translate }}
             </button>
           </div>
         </form>

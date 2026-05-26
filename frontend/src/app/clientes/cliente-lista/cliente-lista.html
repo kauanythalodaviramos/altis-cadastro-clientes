@@ -1,6 +1,6 @@
 <div class="d-flex align-items-center justify-content-between mb-3">
-  <h1 class="h3 mb-0">Clientes</h1>
-  <a routerLink="/clientes/novo" class="btn btn-primary">+ Novo cliente</a>
+  <h1 class="h3 mb-0">{{ 'CLIENTES.TITULO' | translate }}</h1>
+  <a routerLink="/clientes/novo" class="btn btn-primary">{{ 'CLIENTES.BTN_NOVO' | translate }}</a>
 </div>
 
 @if (mensagem()) {
@@ -12,9 +12,9 @@
 
 <div class="card mb-3">
   <div class="card-body">
-    <label class="form-label">Buscar por nome ou CPF</label>
+    <label class="form-label">{{ 'CLIENTES.BUSCAR' | translate }}</label>
     <input type="text" class="form-control"
-           placeholder="Digite parte do nome ou CPF..."
+           [placeholder]="'CLIENTES.BUSCAR_PLACEHOLDER' | translate"
            [ngModel]="filtro()"
            (ngModelChange)="onFiltroChange($event)" />
   </div>
@@ -25,18 +25,18 @@
     <table class="table table-hover align-middle mb-0">
       <thead class="table-light">
         <tr>
-          <th>Nome</th>
-          <th>CPF</th>
-          <th>Telefone</th>
-          <th>Cidade/UF</th>
-          <th class="text-end">Acoes</th>
+          <th>{{ 'CLIENTES.COL_NOME' | translate }}</th>
+          <th>{{ 'CLIENTES.COL_CPF' | translate }}</th>
+          <th>{{ 'CLIENTES.COL_TELEFONE' | translate }}</th>
+          <th>{{ 'CLIENTES.COL_CIDADE' | translate }}</th>
+          <th class="text-end">{{ 'CLIENTES.COL_ACOES' | translate }}</th>
         </tr>
       </thead>
       <tbody>
         @if (carregando()) {
-          <tr><td colspan="5" class="text-center text-muted py-4">Carregando...</td></tr>
+          <tr><td colspan="5" class="text-center text-muted py-4">{{ 'CLIENTES.CARREGANDO' | translate }}</td></tr>
         } @else if (clientes().length === 0) {
-          <tr><td colspan="5" class="text-center text-muted py-4">Nenhum cliente encontrado.</td></tr>
+          <tr><td colspan="5" class="text-center text-muted py-4">{{ 'CLIENTES.VAZIO' | translate }}</td></tr>
         } @else {
           @for (cliente of clientes(); track cliente.id) {
             <tr>
@@ -55,9 +55,9 @@
               </td>
               <td class="text-end">
                 <a [routerLink]="['/clientes', cliente.id, 'editar']"
-                   class="btn btn-sm btn-outline-primary me-1">Editar</a>
+                   class="btn btn-sm btn-outline-primary me-1">{{ 'CLIENTES.BTN_EDITAR' | translate }}</a>
                 <button type="button" class="btn btn-sm btn-outline-danger"
-                        (click)="excluir(cliente)">Excluir</button>
+                        (click)="excluir(cliente)">{{ 'CLIENTES.BTN_EXCLUIR' | translate }}</button>
               </td>
             </tr>
           }
