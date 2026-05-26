@@ -5,9 +5,9 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgxMaskDirective } from 'ngx-mask';
 
-import { ApiErrorResponse, Cliente } from '../../models/cliente.model';
-import { ClienteService } from '../../services/cliente.service';
-import { cpfValidator, telefoneValidator } from '../../validators/cpf.validator';
+import { ApiErrorResponse, Cliente } from '../cliente.model';
+import { ClienteService } from '../cliente.service';
+import { cpfValidator, telefoneValidator } from '../../shared/validators/cpf.validator';
 
 @Component({
   selector: 'app-cliente-form',

@@ -5,8 +5,8 @@ import { Router, RouterLink } from '@angular/router';
 import { NgxMaskPipe } from 'ngx-mask';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 
-import { Cliente } from '../../models/cliente.model';
-import { ClienteService } from '../../services/cliente.service';
+import { Cliente } from '../cliente.model';
+import { ClienteService } from '../cliente.service';
 
 @Component({
   selector: 'app-cliente-lista',
