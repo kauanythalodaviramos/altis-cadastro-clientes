@@ -1,0 +1,24 @@
+<h1 class="h3 mb-4">Configuracoes</h1>
+
+<div class="row g-4">
+  <aside class="col-md-3">
+    <nav class="config-side card border-0 shadow-sm p-2">
+      <a routerLink="perfil"
+         routerLinkActive="active"
+         class="config-link">
+        <span class="config-icon">@</span>
+        <span>Perfil</span>
+      </a>
+      <a routerLink="acessibilidade"
+         routerLinkActive="active"
+         class="config-link">
+        <span class="config-icon">A</span>
+        <span>Acessibilidade</span>
+      </a>
+    </nav>
+  </aside>
+
+  <section class="col-md-9">
+    <router-outlet></router-outlet>
+  </section>
+</div>

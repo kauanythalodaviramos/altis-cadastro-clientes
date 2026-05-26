@@ -31,5 +31,18 @@ export const routes: Routes = [
     loadComponent: () => import('./clientes/cliente-form/cliente-form').then(m => m.ClienteForm)
   },
 
+  {
+    path: 'configuracoes',
+    canActivate: [authGuard],
+    loadComponent: () => import('./configuracoes/configuracoes').then(m => m.Configuracoes),
+    children: [
+      { path: '', redirectTo: 'perfil', pathMatch: 'full' },
+      {
+        path: 'perfil',
+        loadComponent: () => import('./configuracoes/perfil/perfil').then(m => m.Perfil)
+      }
+    ]
+  },
+
   { path: '**', redirectTo: 'clientes' }
 ];

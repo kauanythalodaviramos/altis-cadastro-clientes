@@ -1,0 +1,157 @@
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-4">
+    <h2 class="h5 mb-1">Editar perfil</h2>
+    <p class="text-muted small mb-4">Atualize suas informacoes pessoais e foto.</p>
+
+    @if (mensagem()) {
+      <div class="alert alert-success py-2 small alert-anim">{{ mensagem() }}</div>
+    }
+    @if (erro()) {
+      <div class="alert alert-danger py-2 small alert-anim">{{ erro() }}</div>
+    }
+
+    <!-- Avatar -->
+    <div class="d-flex align-items-center gap-3 mb-4 avatar-block">
+      <div class="avatar-big">
+        @if (fotoExibida()) {
+          <img [src]="fotoExibida()" alt="Avatar" />
+        } @else {
+          <span>{{ (auth.user()?.nome || '?').charAt(0).toUpperCase() }}</span>
+        }
+        @if (uploadingFoto()) {
+          <div class="avatar-loading">
+            <span class="spinner-border spinner-border-sm text-light"></span>
+          </div>
+        }
+      </div>
+      <div class="d-flex flex-column gap-2">
+        <label class="btn btn-outline-primary btn-sm btn-anim mb-0">
+          @if (auth.user()?.temFoto) { Trocar foto } @else { Adicionar foto }
+          <input type="file" hidden accept="image/jpeg,image/png,image/webp" (change)="onArquivoSelecionado($event)" />
+        </label>
+        @if (auth.user()?.temFoto) {
+          <button type="button" class="btn btn-outline-danger btn-sm btn-anim" (click)="removerFoto()">
+            Remover foto
+          </button>
+        }
+        <div class="form-text small">JPG, PNG ou WebP, ate 5MB.</div>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="form" (ngSubmit)="salvarPerfil()" novalidate>
+      <div class="row g-3">
+        <div class="col-md-12">
+          <label class="form-label">Nome</label>
+          <input type="text" class="form-control"
+                 formControlName="nome"
+                 [class.is-invalid]="campoInvalido('nome')" />
+          @if (campoInvalido('nome')) {
+            <div class="invalid-feedback">{{ mensagemErro('nome') }}</div>
+          }
+        </div>
+
+        <div class="col-md-12">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control"
+                 formControlName="email"
+                 [class.is-invalid]="campoInvalido('email')" />
+          @if (campoInvalido('email')) {
+            <div class="invalid-feedback">{{ mensagemErro('email') }}</div>
+          }
+        </div>
+
+        @if (emailMudou()) {
+          <div class="col-md-12 senha-confirma-block">
+            <div class="alert alert-warning py-2 small mb-2">
+              Voce esta alterando o email. Confirme sua senha atual.
+            </div>
+            <label class="form-label">Senha atual</label>
+            <input type="password" class="form-control"
+                   formControlName="senhaAtual"
+                   autocomplete="current-password"
+                   [class.is-invalid]="campoInvalido('senhaAtual')" />
+            @if (campoInvalido('senhaAtual')) {
+              <div class="invalid-feedback">{{ mensagemErro('senhaAtual') }}</div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mt-4">
+        <button type="button" class="btn btn-outline-secondary btn-anim" (click)="abrirModalSenha()">
+          Alterar senha
+        </button>
+        <button type="submit" class="btn btn-primary btn-anim" [disabled]="salvando()">
+          @if (salvando()) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+          }
+          Salvar alteracoes
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Alterar Senha -->
+@if (modalSenhaAberto()) {
+  <div class="modal-backdrop-custom" (click)="fecharModalSenha()"></div>
+  <div class="modal-custom" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header">
+          <h5 class="modal-title">Alterar senha</h5>
+          <button type="button" class="btn-close" (click)="fecharModalSenha()"></button>
+        </div>
+        <form [formGroup]="senhaForm" (ngSubmit)="alterarSenha()" novalidate>
+          <div class="modal-body">
+            @if (mensagemSenha()) {
+              <div class="alert alert-danger py-2 small">{{ mensagemSenha() }}</div>
+            }
+            <div class="mb-3">
+              <label class="form-label">Senha atual</label>
+              <input type="password" class="form-control"
+                     formControlName="senhaAtual"
+                     autocomplete="current-password"
+                     [class.is-invalid]="campoSenhaInvalido('senhaAtual')" />
+              @if (campoSenhaInvalido('senhaAtual')) {
+                <div class="invalid-feedback">{{ mensagemErroSenha('senhaAtual') }}</div>
+              }
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Nova senha</label>
+              <input type="password" class="form-control"
+                     formControlName="senhaNova"
+                     autocomplete="new-password"
+                     [class.is-invalid]="campoSenhaInvalido('senhaNova')" />
+              @if (campoSenhaInvalido('senhaNova')) {
+                <div class="invalid-feedback">{{ mensagemErroSenha('senhaNova') }}</div>
+              } @else {
+                <div class="form-text small">Minimo 8 caracteres, com letra e numero.</div>
+              }
+            </div>
+            <div class="mb-1">
+              <label class="form-label">Confirmar nova senha</label>
+              <input type="password" class="form-control"
+                     formControlName="confirmarSenha"
+                     autocomplete="new-password"
+                     [class.is-invalid]="campoSenhaInvalido('confirmarSenha')" />
+              @if (campoSenhaInvalido('confirmarSenha')) {
+                <div class="invalid-feedback">{{ mensagemErroSenha('confirmarSenha') }}</div>
+              }
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" (click)="fecharModalSenha()">Cancelar</button>
+            <button type="submit" class="btn btn-primary btn-anim" [disabled]="alterandoSenha()">
+              @if (alterandoSenha()) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+              }
+              Alterar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}
