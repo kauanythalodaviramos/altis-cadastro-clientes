@@ -1,0 +1,99 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="h4 mb-0">{{ 'ALBUM.EMO_TITULO' | translate }}</h2>
+  <button type="button" class="btn btn-primary btn-anim" (click)="abrirNovo()">
+    {{ 'ALBUM.EMO_NOVA' | translate }}
+  </button>
+</div>
+
+@if (mensagem()) {
+  <div class="alert alert-success py-2 small alert-anim">{{ mensagem() }}</div>
+}
+@if (erro()) {
+  <div class="alert alert-danger py-2 small alert-anim">{{ erro() }}</div>
+}
+
+@if (carregando()) {
+  <div class="text-center text-muted py-5">
+    <div class="spinner-border text-primary"></div>
+  </div>
+} @else {
+  <div class="emo-grid">
+    @for (e of emocoes(); track e.id; let i = $index) {
+      <article class="emo-card" [style.animationDelay]="(i * 40) + 'ms'">
+        <div class="emo-color-bar" [style.background]="e.cor || '#6c757d'"></div>
+        <div class="emo-body">
+          <div class="emo-nome">{{ e.nome }}</div>
+          @if (e.icone) {
+            <div class="emo-icone small text-muted">{{ e.icone }}</div>
+          }
+          <div class="emo-acoes mt-2">
+            <button type="button" class="btn btn-sm btn-outline-primary btn-anim" (click)="abrirEditar(e)">{{ 'ALBUM.BTN_EDITAR' | translate }}</button>
+            <button type="button" class="btn btn-sm btn-outline-danger btn-anim" (click)="excluir(e)">{{ 'ALBUM.BTN_EXCLUIR' | translate }}</button>
+          </div>
+        </div>
+      </article>
+    }
+  </div>
+}
+
+@if (modalAberto()) {
+  <div class="modal-backdrop-custom" (click)="fecharModal()"></div>
+  <div class="modal-custom">
+    <div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            @if (editandoId() != null) { {{ 'ALBUM.EMO_EDITAR' | translate }} }
+            @else { {{ 'ALBUM.EMO_NOVA' | translate }} }
+          </h5>
+          <button type="button" class="btn-close" (click)="fecharModal()"></button>
+        </div>
+        <div class="modal-body">
+          @if (formErro()) {
+            <div class="alert alert-danger py-2 small">{{ formErro() }}</div>
+          }
+
+          <div class="mb-3">
+            <label class="form-label">{{ 'ALBUM.EMO_NOME' | translate }}</label>
+            <input type="text" class="form-control" maxlength="50"
+                   [ngModel]="formNome()" (ngModelChange)="formNome.set($event)" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">{{ 'ALBUM.EMO_COR' | translate }}</label>
+            <div class="cor-grid">
+              @for (c of cores; track c) {
+                <button type="button" class="cor-btn"
+                        [class.active]="formCor() === c"
+                        [style.background]="c"
+                        (click)="setCor(c)"
+                        [attr.aria-label]="c"></button>
+              }
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">{{ 'ALBUM.EMO_ICONE' | translate }}</label>
+            <div class="icone-grid">
+              <button type="button" class="icone-btn" [class.active]="formIcone() === ''" (click)="setIcone('')">—</button>
+              @for (i of icones; track i) {
+                <button type="button" class="icone-btn" [class.active]="formIcone() === i" (click)="setIcone(i)">
+                  {{ i }}
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="fecharModal()">{{ 'CLIENTES.BTN_CANCELAR' | translate }}</button>
+          <button type="button" class="btn btn-primary btn-anim" (click)="salvar()" [disabled]="salvando()">
+            @if (salvando()) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+            }
+            {{ 'ALBUM.BTN_SALVAR' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

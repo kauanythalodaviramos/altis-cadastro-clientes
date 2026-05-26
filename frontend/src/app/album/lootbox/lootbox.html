@@ -1,0 +1,137 @@
+<div class="lootbox-page">
+  <div class="row g-3">
+    <!-- Sidebar filtros -->
+    <aside class="col-lg-3">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <h6 class="text-uppercase text-muted small fw-bold mb-3">{{ 'ALBUM.FILTROS' | translate }}</h6>
+
+          @if (emocoes().length) {
+            <div class="filtro-grupo">
+              <div class="filtro-label">{{ 'ALBUM.FILTRO_EMOCOES' | translate }}</div>
+              @for (e of emocoes(); track e.id) {
+                <label class="chip" [class.active]="emocoesSel().has(e.id)">
+                  <input type="checkbox" hidden [checked]="emocoesSel().has(e.id)" (change)="toggleEmocao(e.id)" />
+                  <span class="chip-dot" [style.background]="e.cor || '#888'"></span>
+                  {{ e.nome }}
+                </label>
+              }
+            </div>
+          }
+
+          @if (tags().length) {
+            <div class="filtro-grupo">
+              <div class="filtro-label">{{ 'ALBUM.FILTRO_TAGS' | translate }}</div>
+              @for (t of tags(); track t.id) {
+                <label class="chip" [class.active]="tagsSel().has(t.id)">
+                  <input type="checkbox" hidden [checked]="tagsSel().has(t.id)" (change)="toggleTag(t.id)" />
+                  #{{ t.nome }}
+                </label>
+              }
+            </div>
+          }
+
+          <div class="filtro-grupo">
+            <div class="filtro-label">{{ 'ALBUM.FILTRO_CLIENTE' | translate }}</div>
+            <select class="form-select form-select-sm"
+                    [ngModel]="clienteSel()"
+                    (ngModelChange)="setCliente($event)">
+              <option [ngValue]="null">{{ 'ALBUM.FILTRO_CLIENTE_TODOS' | translate }}</option>
+              @for (c of clientes(); track c.id) {
+                <option [ngValue]="c.id">{{ c.nome }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="filtro-grupo">
+            <div class="filtro-label">{{ 'ALBUM.FILTRO_FAVORITISMO' | translate }}</div>
+            <div class="seg-control">
+              <button type="button" class="seg-btn" [class.active]="favSel() === ''" (click)="setFav('')">{{ 'ALBUM.FAV_TODOS' | translate }}</button>
+              <button type="button" class="seg-btn" [class.active]="favSel() === 'amados'" (click)="setFav('amados')">{{ 'ALBUM.FAV_AMADOS' | translate }}</button>
+              <button type="button" class="seg-btn" [class.active]="favSel() === 'medianos'" (click)="setFav('medianos')">{{ 'ALBUM.FAV_MEDIANOS' | translate }}</button>
+              <button type="button" class="seg-btn" [class.active]="favSel() === 'menos'" (click)="setFav('menos')">{{ 'ALBUM.FAV_MENOS' | translate }}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Palco -->
+    <section class="col-lg-9">
+      <div class="lootbox-palco">
+        <!-- Caixa (idle / shaking / opening) -->
+        @if (state() === 'idle' || state() === 'shaking' || state() === 'opening') {
+          <div class="caixa-wrap">
+            <div class="caixa"
+                 [class.shaking]="state() === 'shaking'"
+                 [class.opening]="state() === 'opening'">
+              <span class="caixa-emoji">🎁</span>
+              @if (state() === 'opening') {
+                <span class="sparkle s1"></span>
+                <span class="sparkle s2"></span>
+                <span class="sparkle s3"></span>
+                <span class="sparkle s4"></span>
+                <span class="sparkle s5"></span>
+                <span class="sparkle s6"></span>
+              }
+            </div>
+
+            @if (state() === 'idle') {
+              <button type="button" class="btn-abrir btn-anim" (click)="abrirCaixa()">
+                <span>🎲</span>
+                {{ 'ALBUM.BTN_ABRIR' | translate }}
+              </button>
+            }
+          </div>
+        }
+
+        <!-- Empty (sem fotos elegíveis) -->
+        @if (state() === 'empty') {
+          <div class="empty-result">
+            <div class="empty-icon">🪹</div>
+            <p>{{ 'ALBUM.LOOTBOX_VAZIO' | translate }}</p>
+            <button type="button" class="btn btn-outline-primary btn-anim" (click)="novamente()">
+              {{ 'ALBUM.LOOTBOX_TENTAR' | translate }}
+            </button>
+          </div>
+        }
+
+        <!-- Reveal das 3 fotos -->
+        @if (state() === 'revealing' || state() === 'done') {
+          <div class="reveal-grid">
+            @for (foto of fotosSorteadas(); track foto.id; let i = $index) {
+              <div class="reveal-card" [style.animationDelay]="(i * 600) + 'ms'">
+                <div class="reveal-thumb-wrap">
+                  <img appAuthImg [appAuthImg]="imagemUrl(foto.id)" alt="" class="reveal-thumb" />
+                  <div class="reveal-rank">#{{ i + 1 }}</div>
+                </div>
+                <div class="reveal-info">
+                  <div class="reveal-titulo">{{ foto.titulo || '—' }}</div>
+                  <div class="d-flex justify-content-between align-items-center mt-1">
+                    <span class="reveal-emocao"
+                          [style.background]="foto.emocao.cor || 'var(--bs-primary)'">
+                      {{ foto.emocao.nome }}
+                    </span>
+                    <span class="reveal-likes">
+                      <span class="heart">♥</span> {{ foto.likesCount }}
+                    </span>
+                  </div>
+                  @if (foto.cliente) {
+                    <div class="small text-muted mt-1">{{ foto.cliente.nome }}</div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+          @if (state() === 'done') {
+            <div class="text-center mt-4 done-block">
+              <button type="button" class="btn btn-primary btn-anim" (click)="novamente()">
+                {{ 'ALBUM.LOOTBOX_SORTEAR_NOVAMENTE' | translate }}
+              </button>
+            </div>
+          }
+        }
+      </div>
+    </section>
+  </div>
+</div>

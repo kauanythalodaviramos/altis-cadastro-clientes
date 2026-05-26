@@ -122,7 +122,20 @@
     "BTN_EXCLUIR": "Delete",
     "BTN_FECHAR": "Close",
     "CONFIRMAR_EXCLUIR": "Delete this photo? This action cannot be undone.",
-    "EXCLUIDA_SUCESSO": "Photo deleted."
+    "EXCLUIDA_SUCESSO": "Photo deleted.",
+    "BTN_ABRIR": "Open the box",
+    "LOOTBOX_VAZIO": "Not enough photos match your filters.",
+    "LOOTBOX_TENTAR": "Adjust filters",
+    "LOOTBOX_SORTEAR_NOVAMENTE": "Draw again",
+    "EMO_TITULO": "Moods",
+    "EMO_NOVA": "+ New mood",
+    "EMO_EDITAR": "Edit mood",
+    "EMO_NOME": "Name",
+    "EMO_COR": "Color",
+    "EMO_ICONE": "Icon",
+    "TAG_TITULO": "Tags",
+    "TAG_NOVA": "New tag",
+    "TAG_VAZIO": "You don't have any tags yet."
   },
   "CONFIG": {
     "TITULO": "Settings",

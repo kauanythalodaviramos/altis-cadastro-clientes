@@ -122,7 +122,20 @@
     "BTN_EXCLUIR": "Excluir",
     "BTN_FECHAR": "Fechar",
     "CONFIRMAR_EXCLUIR": "Excluir esta foto? Esta ação não pode ser desfeita.",
-    "EXCLUIDA_SUCESSO": "Foto excluída."
+    "EXCLUIDA_SUCESSO": "Foto excluída.",
+    "BTN_ABRIR": "Abrir caixinha",
+    "LOOTBOX_VAZIO": "Não há fotos suficientes nos filtros escolhidos.",
+    "LOOTBOX_TENTAR": "Ajustar filtros",
+    "LOOTBOX_SORTEAR_NOVAMENTE": "Sortear novamente",
+    "EMO_TITULO": "Emoções",
+    "EMO_NOVA": "+ Nova emoção",
+    "EMO_EDITAR": "Editar emoção",
+    "EMO_NOME": "Nome",
+    "EMO_COR": "Cor",
+    "EMO_ICONE": "Ícone",
+    "TAG_TITULO": "Tags",
+    "TAG_NOVA": "Nova tag",
+    "TAG_VAZIO": "Você ainda não tem tags."
   },
   "CONFIG": {
     "TITULO": "Configurações",

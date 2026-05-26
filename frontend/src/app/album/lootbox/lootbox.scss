@@ -1,0 +1,227 @@
+:host {
+  display: block;
+}
+
+/* Reusar estilos de chip/seg-btn do galeria - duplicado aqui pra independência */
+.filtro-grupo { margin-bottom: 1.25rem; }
+.filtro-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--bs-secondary-color);
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.625rem;
+  margin: 0 0.25rem 0.25rem 0;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.chip:hover { border-color: var(--bs-primary); transform: translateY(-1px); }
+.chip.active { border-color: var(--bs-primary); background: rgba(13, 110, 253, 0.10); font-weight: 500; }
+.chip-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+.seg-control { display: flex; flex-direction: column; gap: 0.25rem; }
+.seg-btn {
+  padding: 0.375rem 0.75rem;
+  text-align: left;
+  font-size: 0.85rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.4rem;
+  background: transparent;
+  color: var(--bs-body-color);
+  cursor: pointer;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.seg-btn:hover { border-color: var(--bs-primary); }
+.seg-btn.active { background: var(--bs-primary); color: #fff; border-color: var(--bs-primary); }
+
+.btn-anim {
+  transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-anim:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* ============ Palco ============ */
+.lootbox-palco {
+  min-height: 540px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  position: relative;
+}
+
+.caixa-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.caixa {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  border-radius: 1.5rem;
+  background: linear-gradient(135deg, #ff6b9d, #c44ed1, #6a4cd1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 20px 40px -10px rgba(106, 76, 209, 0.45);
+  animation: caixaFloat 3s ease-in-out infinite;
+}
+.caixa-emoji {
+  font-size: 5rem;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+  transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes caixaFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+.caixa.shaking {
+  animation: caixaShake 300ms cubic-bezier(0.36, 0.07, 0.19, 0.97) 3;
+}
+@keyframes caixaShake {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  20%      { transform: translate(-8px, -2px) rotate(-3deg); }
+  40%      { transform: translate(8px, 0) rotate(3deg); }
+  60%      { transform: translate(-6px, 2px) rotate(-2deg); }
+  80%      { transform: translate(6px, 0) rotate(2deg); }
+}
+
+.caixa.opening {
+  animation: caixaPop 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes caixaPop {
+  0%   { transform: scale(1); filter: brightness(1); }
+  40%  { transform: scale(1.18); filter: brightness(1.3); }
+  100% { transform: scale(0); filter: brightness(2); opacity: 0; }
+}
+
+/* Sparkles */
+.sparkle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(circle, #fff 0%, #ffd700 60%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0;
+  animation: sparkle 600ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.sparkle.s1 { top: 50%; left: 50%; animation-delay: 50ms;  --tx: -120px; --ty: -100px; }
+.sparkle.s2 { top: 50%; left: 50%; animation-delay: 80ms;  --tx:  120px; --ty: -100px; }
+.sparkle.s3 { top: 50%; left: 50%; animation-delay: 110ms; --tx: -100px; --ty:  120px; }
+.sparkle.s4 { top: 50%; left: 50%; animation-delay: 140ms; --tx:  100px; --ty:  120px; }
+.sparkle.s5 { top: 50%; left: 50%; animation-delay: 170ms; --tx:    0px; --ty: -140px; }
+.sparkle.s6 { top: 50%; left: 50%; animation-delay: 200ms; --tx:    0px; --ty:  140px; }
+
+@keyframes sparkle {
+  0%   { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+  50%  { opacity: 1; }
+  100% { transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(2.5); opacity: 0; }
+}
+
+.btn-abrir {
+  background: linear-gradient(135deg, #ff6b9d, #c44ed1);
+  color: #fff;
+  border: none;
+  padding: 0.875rem 2.5rem;
+  border-radius: 999px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 8px 20px -4px rgba(196, 78, 209, 0.45);
+}
+.btn-abrir:hover { transform: translateY(-2px); box-shadow: 0 12px 24px -4px rgba(196, 78, 209, 0.55); }
+
+/* ============ Empty ============ */
+.empty-result { text-align: center; }
+.empty-icon { font-size: 4rem; }
+.empty-result p { color: var(--bs-secondary-color); margin: 1rem 0; }
+
+/* ============ Reveal cards ============ */
+.reveal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  width: 100%;
+}
+@media (max-width: 768px) {
+  .reveal-grid { grid-template-columns: 1fr; }
+}
+
+.reveal-card {
+  background: var(--altis-card-bg);
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 10px 30px -10px var(--altis-shadow-color);
+  opacity: 0;
+  transform: scale(0.5) rotate(-5deg);
+  animation: revealCard 600ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+@keyframes revealCard {
+  to { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+.reveal-thumb-wrap {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: #000;
+  overflow: hidden;
+}
+.reveal-thumb {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.reveal-rank {
+  position: absolute;
+  top: 0.5rem; left: 0.5rem;
+  background: linear-gradient(135deg, #ffd700, #ff9800);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.reveal-info { padding: 0.875rem 1rem 1rem; }
+.reveal-titulo { font-weight: 600; }
+
+.reveal-emocao {
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+}
+.reveal-likes {
+  color: #dc3545;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.reveal-likes .heart { font-size: 1rem; }
+
+.done-block {
+  animation: fadeUp 400ms cubic-bezier(0.4, 0, 0.2, 1) 200ms backwards;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,42 @@
+<h2 class="h4 mb-3">{{ 'ALBUM.TAG_TITULO' | translate }}</h2>
+
+@if (erro()) {
+  <div class="alert alert-danger py-2 small alert-anim">{{ erro() }}</div>
+}
+
+<div class="card border-0 shadow-sm mb-3">
+  <div class="card-body">
+    <label class="form-label">{{ 'ALBUM.TAG_NOVA' | translate }}</label>
+    <div class="input-group">
+      <span class="input-group-text">#</span>
+      <input type="text" class="form-control" maxlength="50"
+             [ngModel]="novaTag()" (ngModelChange)="novaTag.set($event)"
+             (keyup.enter)="criar()" />
+      <button type="button" class="btn btn-primary btn-anim" (click)="criar()" [disabled]="criando() || !novaTag().trim()">
+        @if (criando()) {
+          <span class="spinner-border spinner-border-sm me-1"></span>
+        }
+        {{ 'ALBUM.UPLOAD_ADICIONAR' | translate }}
+      </button>
+    </div>
+  </div>
+</div>
+
+@if (carregando()) {
+  <div class="text-center text-muted py-5">
+    <div class="spinner-border text-primary"></div>
+  </div>
+} @else if (tags().length === 0) {
+  <div class="text-center text-muted py-5">
+    <p>{{ 'ALBUM.TAG_VAZIO' | translate }}</p>
+  </div>
+} @else {
+  <div class="tag-cloud">
+    @for (t of tags(); track t.id; let i = $index) {
+      <div class="tag-chip" [style.animationDelay]="(i * 25) + 'ms'">
+        <span class="tag-nome">#{{ t.nome }}</span>
+        <button type="button" class="tag-remove" (click)="excluir(t)" aria-label="excluir">✕</button>
+      </div>
+    }
+  </div>
+}

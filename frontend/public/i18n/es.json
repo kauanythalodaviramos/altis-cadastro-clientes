@@ -122,7 +122,20 @@
     "BTN_EXCLUIR": "Eliminar",
     "BTN_FECHAR": "Cerrar",
     "CONFIRMAR_EXCLUIR": "¿Eliminar esta foto? Esta acción no se puede deshacer.",
-    "EXCLUIDA_SUCESSO": "Foto eliminada."
+    "EXCLUIDA_SUCESSO": "Foto eliminada.",
+    "BTN_ABRIR": "Abrir caja",
+    "LOOTBOX_VAZIO": "No hay suficientes fotos con tus filtros.",
+    "LOOTBOX_TENTAR": "Ajustar filtros",
+    "LOOTBOX_SORTEAR_NOVAMENTE": "Sortear de nuevo",
+    "EMO_TITULO": "Emociones",
+    "EMO_NOVA": "+ Nueva emoción",
+    "EMO_EDITAR": "Editar emoción",
+    "EMO_NOME": "Nombre",
+    "EMO_COR": "Color",
+    "EMO_ICONE": "Ícono",
+    "TAG_TITULO": "Etiquetas",
+    "TAG_NOVA": "Nueva etiqueta",
+    "TAG_VAZIO": "Aún no tienes etiquetas."
   },
   "CONFIG": {
     "TITULO": "Configuración",

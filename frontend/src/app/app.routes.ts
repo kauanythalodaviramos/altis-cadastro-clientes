@@ -40,6 +40,18 @@ export const routes: Routes = [
       {
         path: 'galeria',
         loadComponent: () => import('./album/galeria/galeria').then(m => m.Galeria)
+      },
+      {
+        path: 'lootbox',
+        loadComponent: () => import('./album/lootbox/lootbox').then(m => m.Lootbox)
+      },
+      {
+        path: 'emocoes',
+        loadComponent: () => import('./album/emocoes/emocoes').then(m => m.Emocoes)
+      },
+      {
+        path: 'tags',
+        loadComponent: () => import('./album/tags/tags').then(m => m.Tags)
       }
     ]
   },
