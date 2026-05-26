@@ -1,0 +1,48 @@
+<div class="auth-wrapper">
+  <div class="auth-card card border-0 shadow-sm">
+    <div class="card-body p-4 p-md-5">
+      <h1 class="h3 text-center mb-1">Entrar</h1>
+      <p class="text-center text-muted mb-4">Acesse sua conta para gerenciar seus clientes</p>
+
+      @if (erro()) {
+        <div class="alert alert-danger py-2 small">{{ erro() }}</div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="entrar()" novalidate>
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control"
+                 formControlName="email"
+                 autocomplete="email"
+                 [class.is-invalid]="campoInvalido('email')" />
+          @if (campoInvalido('email')) {
+            <div class="invalid-feedback">Informe um email valido.</div>
+          }
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">Senha</label>
+          <input type="password" class="form-control"
+                 formControlName="senha"
+                 autocomplete="current-password"
+                 [class.is-invalid]="campoInvalido('senha')" />
+          @if (campoInvalido('senha')) {
+            <div class="invalid-feedback">Informe sua senha.</div>
+          }
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 btn-anim" [disabled]="enviando()">
+          @if (enviando()) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+          }
+          Entrar
+        </button>
+
+        <div class="text-center mt-3 small">
+          Nao tem conta?
+          <a routerLink="/registrar" class="text-decoration-none">Criar uma agora</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

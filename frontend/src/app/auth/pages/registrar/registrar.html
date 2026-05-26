@@ -1,0 +1,61 @@
+<div class="auth-wrapper">
+  <div class="auth-card card border-0 shadow-sm">
+    <div class="card-body p-4 p-md-5">
+      <h1 class="h3 text-center mb-1">Criar conta</h1>
+      <p class="text-center text-muted mb-4">Comece a gerenciar seus clientes em segundos</p>
+
+      @if (erroGeral()) {
+        <div class="alert alert-danger py-2 small">{{ erroGeral() }}</div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="registrar()" novalidate>
+        <div class="mb-3">
+          <label class="form-label">Nome</label>
+          <input type="text" class="form-control"
+                 formControlName="nome"
+                 autocomplete="name"
+                 [class.is-invalid]="campoInvalido('nome')" />
+          @if (campoInvalido('nome')) {
+            <div class="invalid-feedback">{{ mensagemErro('nome') }}</div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control"
+                 formControlName="email"
+                 autocomplete="email"
+                 [class.is-invalid]="campoInvalido('email')" />
+          @if (campoInvalido('email')) {
+            <div class="invalid-feedback">{{ mensagemErro('email') }}</div>
+          }
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">Senha</label>
+          <input type="password" class="form-control"
+                 formControlName="senha"
+                 autocomplete="new-password"
+                 [class.is-invalid]="campoInvalido('senha')" />
+          @if (campoInvalido('senha')) {
+            <div class="invalid-feedback">{{ mensagemErro('senha') }}</div>
+          } @else {
+            <div class="form-text small">Minimo 8 caracteres, com ao menos uma letra e um numero.</div>
+          }
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 btn-anim" [disabled]="enviando()">
+          @if (enviando()) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+          }
+          Criar conta
+        </button>
+
+        <div class="text-center mt-3 small">
+          Ja tem conta?
+          <a routerLink="/login" class="text-decoration-none">Entrar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

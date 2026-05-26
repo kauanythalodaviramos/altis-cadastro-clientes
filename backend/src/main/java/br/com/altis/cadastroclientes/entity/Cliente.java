@@ -11,8 +11,11 @@ import java.time.LocalDateTime;
 @Table(
     name = "CLIENTES",
     uniqueConstraints = {
-        @UniqueConstraint(name = "UK_CLIENTES_CPF", columnNames = "CPF"),
-        @UniqueConstraint(name = "UK_CLIENTES_TELEFONE", columnNames = "TELEFONE")
+        @UniqueConstraint(name = "UK_CLI_USR_CPF", columnNames = {"USUARIO_ID", "CPF"}),
+        @UniqueConstraint(name = "UK_CLI_USR_TEL", columnNames = {"USUARIO_ID", "TELEFONE"})
+    },
+    indexes = {
+        @Index(name = "IDX_CLI_USR", columnList = "USUARIO_ID")
     }
 )
 @Data
@@ -24,6 +27,10 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "USUARIO_ID", nullable = false)
+    private User usuario;
 
     @Column(name = "NOME", nullable = false, length = 150)
     private String nome;

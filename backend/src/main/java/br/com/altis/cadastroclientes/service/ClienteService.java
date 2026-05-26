@@ -5,9 +5,11 @@ import br.com.altis.cadastroclientes.dto.ClienteResponseDTO;
 import br.com.altis.cadastroclientes.dto.EnderecoDTO;
 import br.com.altis.cadastroclientes.entity.Cliente;
 import br.com.altis.cadastroclientes.entity.Endereco;
+import br.com.altis.cadastroclientes.entity.User;
 import br.com.altis.cadastroclientes.exception.DuplicateResourceException;
 import br.com.altis.cadastroclientes.exception.ResourceNotFoundException;
 import br.com.altis.cadastroclientes.repository.ClienteRepository;
+import br.com.altis.cadastroclientes.security.CurrentUserHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,45 +21,47 @@ import java.util.List;
 public class ClienteService {
 
     private final ClienteRepository clienteRepository;
+    private final CurrentUserHelper currentUserHelper;
 
     @Transactional
     public ClienteResponseDTO criar(ClienteRequestDTO request) {
+        User usuario = currentUserHelper.getCurrentUser();
         String cpfLimpo = limparDigitos(request.getCpf());
         String telLimpo = limparDigitos(request.getTelefone());
 
-        if (clienteRepository.existsByCpf(cpfLimpo)) {
+        if (clienteRepository.existsByUsuarioAndCpf(usuario, cpfLimpo)) {
             throw new DuplicateResourceException("cpf", "CPF ja cadastrado");
         }
-        if (clienteRepository.existsByTelefone(telLimpo)) {
+        if (clienteRepository.existsByUsuarioAndTelefone(usuario, telLimpo)) {
             throw new DuplicateResourceException("telefone", "Telefone ja cadastrado para outro cliente");
         }
 
         Cliente cliente = new Cliente();
+        cliente.setUsuario(usuario);
         cliente.setNome(request.getNome().trim());
         cliente.setCpf(cpfLimpo);
         cliente.setTelefone(telLimpo);
         cliente.setObservacoes(request.getObservacoes());
         cliente.setEndereco(toEndereco(request.getEndereco()));
 
-        Cliente saved = clienteRepository.save(cliente);
-        return toResponse(saved);
+        return toResponse(clienteRepository.save(cliente));
     }
 
     @Transactional(readOnly = true)
     public List<ClienteResponseDTO> listar(String filtro) {
+        User usuario = currentUserHelper.getCurrentUser();
         List<Cliente> clientes;
+
         if (filtro == null || filtro.isBlank()) {
-            clientes = clienteRepository.findAllByOrderByNomeAsc();
+            clientes = clienteRepository.findByUsuarioOrderByNomeAsc(usuario);
         } else {
             String filtroTexto = filtro.trim();
             String filtroDigitos = limparDigitos(filtroTexto);
-            // Se o usuario digitou so digitos/pontos/tracos (>=3 digitos), busca por CPF.
-            // Caso contrario, busca por nome (case-insensitive).
             boolean ehBuscaPorCpf = filtroTexto.matches("[0-9.\\-\\s]+") && filtroDigitos.length() >= 3;
             if (ehBuscaPorCpf) {
-                clientes = clienteRepository.findByCpfContainingOrderByNomeAsc(filtroDigitos);
+                clientes = clienteRepository.findByUsuarioAndCpfContainingOrderByNomeAsc(usuario, filtroDigitos);
             } else {
-                clientes = clienteRepository.findByNomeContainingIgnoreCaseOrderByNomeAsc(filtroTexto);
+                clientes = clienteRepository.findByUsuarioAndNomeContainingIgnoreCaseOrderByNomeAsc(usuario, filtroTexto);
             }
         }
         return clientes.stream().map(this::toResponse).toList();
@@ -65,23 +69,21 @@ public class ClienteService {
 
     @Transactional(readOnly = true)
     public ClienteResponseDTO buscarPorId(Long id) {
-        Cliente cliente = clienteRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Cliente nao encontrado: id=" + id));
-        return toResponse(cliente);
+        return toResponse(buscarDoUsuario(id));
     }
 
     @Transactional
     public ClienteResponseDTO atualizar(Long id, ClienteRequestDTO request) {
-        Cliente cliente = clienteRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Cliente nao encontrado: id=" + id));
+        Cliente cliente = buscarDoUsuario(id);
+        User usuario = cliente.getUsuario();
 
         String cpfLimpo = limparDigitos(request.getCpf());
         String telLimpo = limparDigitos(request.getTelefone());
 
-        if (clienteRepository.existsByCpfAndIdNot(cpfLimpo, id)) {
+        if (clienteRepository.existsByUsuarioAndCpfAndIdNot(usuario, cpfLimpo, id)) {
             throw new DuplicateResourceException("cpf", "CPF ja cadastrado para outro cliente");
         }
-        if (clienteRepository.existsByTelefoneAndIdNot(telLimpo, id)) {
+        if (clienteRepository.existsByUsuarioAndTelefoneAndIdNot(usuario, telLimpo, id)) {
             throw new DuplicateResourceException("telefone", "Telefone ja cadastrado para outro cliente");
         }
 
@@ -96,10 +98,15 @@ public class ClienteService {
 
     @Transactional
     public void excluir(Long id) {
-        if (!clienteRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Cliente nao encontrado: id=" + id);
-        }
-        clienteRepository.deleteById(id);
+        Cliente cliente = buscarDoUsuario(id);
+        clienteRepository.delete(cliente);
+    }
+
+    /** Garante que o cliente pertence ao usuario logado. 404 caso contrario. */
+    private Cliente buscarDoUsuario(Long id) {
+        User usuario = currentUserHelper.getCurrentUser();
+        return clienteRepository.findByIdAndUsuario(id, usuario)
+            .orElseThrow(() -> new ResourceNotFoundException("Cliente nao encontrado: id=" + id));
     }
 
     private String limparDigitos(String valor) {
