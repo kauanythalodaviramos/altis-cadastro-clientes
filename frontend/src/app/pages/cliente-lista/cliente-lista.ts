@@ -3,7 +3,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NgxMaskPipe } from 'ngx-mask';
-import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { Cliente } from '../../models/cliente.model';
 import { ClienteService } from '../../services/cliente.service';
@@ -17,7 +17,7 @@ import { ClienteService } from '../../services/cliente.service';
 export class ClienteLista implements OnInit {
   private readonly clienteService = inject(ClienteService);
   private readonly router = inject(Router);
-  private readonly busca$ = new Subject<string>();
+  private readonly filtroInput$ = new Subject<string>();
 
   protected readonly clientes = signal<Cliente[]>([]);
   protected readonly carregando = signal(false);
@@ -29,40 +29,39 @@ export class ClienteLista implements OnInit {
     const nav = this.router.getCurrentNavigation();
     const state = (nav?.extras?.state ?? history.state) as { mensagem?: string } | undefined;
     if (state?.mensagem) {
-      this.mensagem.set(state.mensagem);
-      setTimeout(() => this.mensagem.set(null), 4000);
+      this.mostrarMensagem(state.mensagem);
     }
 
-    this.busca$
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        switchMap((termo) => {
-          this.carregando.set(true);
-          return this.clienteService.listar(termo);
-        })
-      )
-      .subscribe({
-        next: (lista) => {
-          this.clientes.set(lista);
-          this.carregando.set(false);
-        },
-        error: () => {
-          this.erro.set('Nao foi possivel carregar a lista. Verifique se o backend esta no ar (porta 8080).');
-          this.carregando.set(false);
-        }
-      });
+    // Stream de digitacao no filtro: debounce + distinct para nao espamar a API.
+    this.filtroInput$
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((termo) => this.buscar(termo));
 
-    this.carregar('');
+    // Carga inicial: chamada direta, fora do stream com distinct.
+    this.buscar('');
   }
 
-  carregar(termo: string): void {
-    this.busca$.next(termo);
-  }
-
+  /** Chamado pelo input de filtro */
   onFiltroChange(valor: string): void {
     this.filtro.set(valor);
-    this.carregar(valor);
+    this.filtroInput$.next(valor);
+  }
+
+  /** Faz a chamada HTTP direta, sem passar pelo distinctUntilChanged.
+   *  Usado na carga inicial e apos qualquer mutacao (excluir, voltar do form). */
+  private buscar(termo: string): void {
+    this.carregando.set(true);
+    this.erro.set(null);
+    this.clienteService.listar(termo).subscribe({
+      next: (lista) => {
+        this.clientes.set(lista);
+        this.carregando.set(false);
+      },
+      error: () => {
+        this.erro.set('Nao foi possivel carregar a lista. Verifique se o backend esta no ar (porta 8080).');
+        this.carregando.set(false);
+      }
+    });
   }
 
   excluir(cliente: Cliente): void {
@@ -73,13 +72,17 @@ export class ClienteLista implements OnInit {
 
     this.clienteService.excluir(cliente.id).subscribe({
       next: () => {
-        this.mensagem.set(`Cliente "${nome}" excluido com sucesso.`);
-        setTimeout(() => this.mensagem.set(null), 4000);
-        this.carregar(this.filtro());
+        this.mostrarMensagem(`Cliente "${nome}" excluido com sucesso.`);
+        this.buscar(this.filtro());
       },
       error: () => {
         this.erro.set('Erro ao excluir o cliente.');
       }
     });
+  }
+
+  private mostrarMensagem(texto: string): void {
+    this.mensagem.set(texto);
+    setTimeout(() => this.mensagem.set(null), 4000);
   }
 }
