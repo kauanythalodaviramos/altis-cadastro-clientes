@@ -15,6 +15,7 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
     boolean existsByCpfAndIdNot(String cpf, Long id);
     boolean existsByTelefoneAndIdNot(String telefone, Long id);
 
-    List<Cliente> findByNomeContainingIgnoreCaseOrCpfContainingOrderByNomeAsc(String nome, String cpf);
+    List<Cliente> findByNomeContainingIgnoreCaseOrderByNomeAsc(String nome);
+    List<Cliente> findByCpfContainingOrderByNomeAsc(String cpf);
     List<Cliente> findAllByOrderByNomeAsc();
 }

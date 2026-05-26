@@ -1,0 +1,68 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h1 class="h3 mb-0">Clientes</h1>
+  <a routerLink="/clientes/novo" class="btn btn-primary">+ Novo cliente</a>
+</div>
+
+@if (mensagem()) {
+  <div class="alert alert-success">{{ mensagem() }}</div>
+}
+@if (erro()) {
+  <div class="alert alert-danger">{{ erro() }}</div>
+}
+
+<div class="card mb-3">
+  <div class="card-body">
+    <label class="form-label">Buscar por nome ou CPF</label>
+    <input type="text" class="form-control"
+           placeholder="Digite parte do nome ou CPF..."
+           [ngModel]="filtro()"
+           (ngModelChange)="onFiltroChange($event)" />
+  </div>
+</div>
+
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Nome</th>
+          <th>CPF</th>
+          <th>Telefone</th>
+          <th>Cidade/UF</th>
+          <th class="text-end">Acoes</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (carregando()) {
+          <tr><td colspan="5" class="text-center text-muted py-4">Carregando...</td></tr>
+        } @else if (clientes().length === 0) {
+          <tr><td colspan="5" class="text-center text-muted py-4">Nenhum cliente encontrado.</td></tr>
+        } @else {
+          @for (cliente of clientes(); track cliente.id) {
+            <tr>
+              <td>{{ cliente.nome }}</td>
+              <td>{{ cliente.cpf | mask: '000.000.000-00' }}</td>
+              <td>
+                @if (cliente.telefone.length === 11) {
+                  {{ cliente.telefone | mask: '(00) 00000-0000' }}
+                } @else {
+                  {{ cliente.telefone | mask: '(00) 0000-0000' }}
+                }
+              </td>
+              <td>
+                {{ cliente.endereco?.cidade || '—' }}
+                @if (cliente.endereco?.uf) { / {{ cliente.endereco?.uf }} }
+              </td>
+              <td class="text-end">
+                <a [routerLink]="['/clientes', cliente.id, 'editar']"
+                   class="btn btn-sm btn-outline-primary me-1">Editar</a>
+                <button type="button" class="btn btn-sm btn-outline-danger"
+                        (click)="excluir(cliente)">Excluir</button>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

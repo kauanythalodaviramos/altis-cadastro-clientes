@@ -1,0 +1,126 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h1 class="h3 mb-0">{{ edicao ? 'Editar cliente' : 'Novo cliente' }}</h1>
+  <a routerLink="/clientes" class="btn btn-link">&larr; Voltar</a>
+</div>
+
+@if (erroGeral()) {
+  <div class="alert alert-danger">{{ erroGeral() }}</div>
+}
+
+@if (carregando()) {
+  <div class="text-center py-4">Carregando...</div>
+} @else {
+  <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Dados pessoais</h2>
+
+        <div class="row g-3">
+          <div class="col-md-12">
+            <label class="form-label required">Nome</label>
+            <input type="text" class="form-control"
+                   formControlName="nome"
+                   [class.is-invalid]="campoInvalido('nome')" />
+            @if (campoInvalido('nome')) {
+              <div class="invalid-feedback">{{ mensagemErro('nome') }}</div>
+            }
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label required">CPF</label>
+            <input type="text" class="form-control"
+                   formControlName="cpf"
+                   mask="000.000.000-00"
+                   placeholder="000.000.000-00"
+                   [class.is-invalid]="campoInvalido('cpf')" />
+            @if (campoInvalido('cpf')) {
+              <div class="invalid-feedback">{{ mensagemErro('cpf') }}</div>
+            }
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label required">Telefone WhatsApp</label>
+            <input type="text" class="form-control"
+                   formControlName="telefone"
+                   mask="(00) 00000-0000||(00) 0000-0000"
+                   placeholder="(00) 00000-0000"
+                   [class.is-invalid]="campoInvalido('telefone')" />
+            @if (campoInvalido('telefone')) {
+              <div class="invalid-feedback">{{ mensagemErro('telefone') }}</div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3" formGroupName="endereco">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Endereco</h2>
+
+        <div class="row g-3">
+          <div class="col-md-3">
+            <label class="form-label">CEP</label>
+            <input type="text" class="form-control"
+                   formControlName="cep"
+                   mask="00000-000"
+                   placeholder="00000-000" />
+          </div>
+          <div class="col-md-7">
+            <label class="form-label">Logradouro</label>
+            <input type="text" class="form-control" formControlName="logradouro" />
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Numero</label>
+            <input type="text" class="form-control" formControlName="numero" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Complemento</label>
+            <input type="text" class="form-control" formControlName="complemento" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Bairro</label>
+            <input type="text" class="form-control" formControlName="bairro" />
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Cidade</label>
+            <input type="text" class="form-control" formControlName="cidade" />
+          </div>
+          <div class="col-md-1">
+            <label class="form-label">UF</label>
+            <select class="form-select" formControlName="uf">
+              <option value=""></option>
+              @for (uf of ufs; track uf) {
+                <option [value]="uf">{{ uf }}</option>
+              }
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <h2 class="h5 mb-1">Observacoes</h2>
+        <div class="text-muted small mb-2">Maximo 100 caracteres — atual: {{ observacoesLength }}/100</div>
+        <textarea class="form-control"
+                  formControlName="observacoes"
+                  rows="3"
+                  maxlength="100"
+                  [class.is-invalid]="campoInvalido('observacoes')"></textarea>
+        @if (campoInvalido('observacoes')) {
+          <div class="invalid-feedback">{{ mensagemErro('observacoes') }}</div>
+        }
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+      <a routerLink="/clientes" class="btn btn-outline-secondary">Cancelar</a>
+      <button type="submit" class="btn btn-primary" [disabled]="salvando()">
+        @if (salvando()) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+        }
+        {{ edicao ? 'Salvar alteracoes' : 'Cadastrar' }}
+      </button>
+    </div>
+  </form>
+}

@@ -49,9 +49,16 @@ public class ClienteService {
         if (filtro == null || filtro.isBlank()) {
             clientes = clienteRepository.findAllByOrderByNomeAsc();
         } else {
-            String filtroDigitos = limparDigitos(filtro);
-            clientes = clienteRepository
-                .findByNomeContainingIgnoreCaseOrCpfContainingOrderByNomeAsc(filtro.trim(), filtroDigitos);
+            String filtroTexto = filtro.trim();
+            String filtroDigitos = limparDigitos(filtroTexto);
+            // Se o usuario digitou so digitos/pontos/tracos (>=3 digitos), busca por CPF.
+            // Caso contrario, busca por nome (case-insensitive).
+            boolean ehBuscaPorCpf = filtroTexto.matches("[0-9.\\-\\s]+") && filtroDigitos.length() >= 3;
+            if (ehBuscaPorCpf) {
+                clientes = clienteRepository.findByCpfContainingOrderByNomeAsc(filtroDigitos);
+            } else {
+                clientes = clienteRepository.findByNomeContainingIgnoreCaseOrderByNomeAsc(filtroTexto);
+            }
         }
         return clientes.stream().map(this::toResponse).toList();
     }

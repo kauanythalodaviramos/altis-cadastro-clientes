@@ -1,0 +1,19 @@
+@use 'bootstrap/scss/bootstrap';
+
+html, body {
+  height: 100%;
+  background-color: #f5f6f8;
+}
+
+.is-invalid + .invalid-feedback {
+  display: block;
+}
+
+.required::after {
+  content: ' *';
+  color: var(--bs-danger);
+}
+
+.card {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
