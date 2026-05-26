@@ -1,0 +1,73 @@
+# ===== Java / Spring Boot =====
+target/
+build/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+
+# Maven wrapper
+!**/src/main/**/target/
+!**/src/test/**/target/
+.mvn/wrapper/maven-wrapper.jar
+
+# ===== Node / Angular =====
+node_modules/
+dist/
+tmp/
+out-tsc/
+.angular/cache/
+.sass-cache/
+connect.lock
+typings/
+coverage/
+libpeerconnection.log
+testem.log
+.angular-cli.json
+
+# ===== IDE =====
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+nbproject/
+.project
+.classpath
+.settings/
+
+# ===== Logs =====
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+spring.log
+application*.log
+
+# ===== Environment / secrets =====
+.env
+.env.*
+!.env.example
+application-local.properties
+application-dev.properties
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ===== Outros =====
+*.bak
+*.tmp
