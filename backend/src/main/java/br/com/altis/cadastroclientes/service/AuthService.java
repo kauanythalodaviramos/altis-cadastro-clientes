@@ -24,6 +24,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final CurrentUserHelper currentUserHelper;
+    private final EmocaoService emocaoService;
 
     @Transactional
     public JwtResponseDTO register(RegisterRequestDTO req) {
@@ -35,6 +36,9 @@ public class AuthService {
         user.setEmail(req.getEmail().trim().toLowerCase());
         user.setSenhaHash(passwordEncoder.encode(req.getSenha()));
         user = userRepository.save(user);
+
+        // Cria emocoes padrao para o novo usuario.
+        emocaoService.bootstrapDefault(user);
 
         return buildJwtResponse(user);
     }
