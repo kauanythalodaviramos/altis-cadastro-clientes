@@ -4,9 +4,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
@@ -54,6 +56,21 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleMaxUpload(MaxUploadSizeExceededException ex) {
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
             .body(montarResposta(HttpStatus.PAYLOAD_TOO_LARGE, "Arquivo excede o tamanho maximo permitido (5MB)", null));
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<Map<String, Object>> handleMissingParam(MissingServletRequestParameterException ex) {
+        Map<String, String> erros = new LinkedHashMap<>();
+        erros.put(ex.getParameterName(), "Parametro obrigatorio nao informado");
+        return ResponseEntity.badRequest()
+            .body(montarResposta(HttpStatus.BAD_REQUEST, "Parametro obrigatorio ausente: " + ex.getParameterName(), erros));
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Map<String, Object>> handleResponseStatus(ResponseStatusException ex) {
+        HttpStatus status = HttpStatus.valueOf(ex.getStatusCode().value());
+        return ResponseEntity.status(status)
+            .body(montarResposta(status, ex.getReason() != null ? ex.getReason() : status.getReasonPhrase(), null));
     }
 
     @ExceptionHandler(Exception.class)

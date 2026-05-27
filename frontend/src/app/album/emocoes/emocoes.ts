@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, HostListener, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { Emocao, EmocaoRequest } from '../models/album.model';
 import { EmocaoService } from '../services/emocao.service';
@@ -18,6 +18,7 @@ const ICONES_SUGERIDOS = ['emoji-smile', 'emoji-frown', 'heart-fill', 'moon', 'l
 })
 export class Emocoes implements OnInit {
   private readonly emocaoService = inject(EmocaoService);
+  private readonly translate = inject(TranslateService);
 
   protected readonly emocoes = signal<Emocao[]>([]);
   protected readonly carregando = signal(true);
@@ -37,6 +38,13 @@ export class Emocoes implements OnInit {
 
   ngOnInit(): void {
     this.carregar();
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    if (this.modalAberto()) {
+      this.fecharModal();
+    }
   }
 
   carregar(): void {
@@ -108,7 +116,7 @@ export class Emocoes implements OnInit {
   }
 
   excluir(e: Emocao): void {
-    if (!confirm(`Excluir a emocao "${e.nome}"? Se houver fotos vinculadas, sera bloqueado.`)) return;
+    if (!confirm(this.translate.instant('ALBUM.CONFIRMAR_EXCLUIR_EMO', { nome: e.nome }))) return;
     this.emocaoService.excluir(e.id).subscribe({
       next: () => {
         this.mostrarMensagem(`Emocao "${e.nome}" excluida.`);

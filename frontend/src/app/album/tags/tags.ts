@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { Tag } from '../models/album.model';
 import { TagService } from '../services/tag.service';
@@ -15,6 +15,7 @@ import { TagService } from '../services/tag.service';
 })
 export class Tags implements OnInit {
   private readonly tagService = inject(TagService);
+  private readonly translate = inject(TranslateService);
 
   protected readonly tags = signal<Tag[]>([]);
   protected readonly carregando = signal(true);
@@ -53,7 +54,7 @@ export class Tags implements OnInit {
   }
 
   excluir(t: Tag): void {
-    if (!confirm(`Excluir a tag "${t.nome}"?`)) return;
+    if (!confirm(this.translate.instant('ALBUM.CONFIRMAR_EXCLUIR_TAG', { nome: t.nome }))) return;
     this.tagService.excluir(t.id).subscribe({
       next: () => this.carregar(),
       error: (err: HttpErrorResponse) => this.erro.set(err.error?.message ?? 'Erro ao excluir.')

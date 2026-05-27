@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, computed, effect, inject, signal } from '@angular/core';
+import { Component, HostListener, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subject, debounceTime, forkJoin } from 'rxjs';
@@ -79,6 +79,15 @@ export class Galeria implements OnInit {
   ngOnInit(): void {
     this.carregarReferencias();
     this.carregarFotos();
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    if (this.fotoDetalhe()) {
+      this.fecharDetalhe();
+    } else if (this.uploadAberto()) {
+      this.fecharUpload();
+    }
   }
 
   // ============ Loaders ============

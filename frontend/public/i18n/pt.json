@@ -135,7 +135,9 @@
     "EMO_ICONE": "Ícone",
     "TAG_TITULO": "Tags",
     "TAG_NOVA": "Nova tag",
-    "TAG_VAZIO": "Você ainda não tem tags."
+    "TAG_VAZIO": "Você ainda não tem tags.",
+    "CONFIRMAR_EXCLUIR_EMO": "Excluir a emoção \"{{nome}}\"? Se houver fotos vinculadas, será bloqueado.",
+    "CONFIRMAR_EXCLUIR_TAG": "Excluir a tag \"{{nome}}\"?"
   },
   "CONFIG": {
     "TITULO": "Configurações",

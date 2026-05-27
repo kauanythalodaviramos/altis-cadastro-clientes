@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, effect, inject, signal } from '@angular/core';
+import { Component, HostListener, OnInit, effect, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { AuthService } from '../../auth/auth.service';
 
@@ -15,6 +15,7 @@ import { AuthService } from '../../auth/auth.service';
 export class Perfil implements OnInit {
   private readonly fb = inject(FormBuilder);
   protected readonly auth = inject(AuthService);
+  private readonly translate = inject(TranslateService);
 
   protected readonly salvando = signal(false);
   protected readonly mensagem = signal<string | null>(null);
@@ -57,6 +58,13 @@ export class Perfil implements OnInit {
 
   ngOnInit(): void {
     this.auth.refreshMe().subscribe({ error: () => {} });
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    if (this.modalSenhaAberto()) {
+      this.fecharModalSenha();
+    }
   }
 
   private senhaForteValidator(ctrl: any) {
@@ -174,7 +182,7 @@ export class Perfil implements OnInit {
   }
 
   removerFoto(): void {
-    if (!confirm('Remover sua foto de perfil?')) return;
+    if (!confirm(this.translate.instant('CONFIG.CONFIRMAR_REMOVER_FOTO'))) return;
     this.auth.removerFoto().subscribe({
       next: () => {
         this.previewUrl.set(null);

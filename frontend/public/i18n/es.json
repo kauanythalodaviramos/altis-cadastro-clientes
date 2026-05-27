@@ -135,7 +135,9 @@
     "EMO_ICONE": "Ícono",
     "TAG_TITULO": "Etiquetas",
     "TAG_NOVA": "Nueva etiqueta",
-    "TAG_VAZIO": "Aún no tienes etiquetas."
+    "TAG_VAZIO": "Aún no tienes etiquetas.",
+    "CONFIRMAR_EXCLUIR_EMO": "¿Eliminar la emoción \"{{nome}}\"? Bloqueado si hay fotos vinculadas.",
+    "CONFIRMAR_EXCLUIR_TAG": "¿Eliminar la etiqueta \"{{nome}}\"?"
   },
   "CONFIG": {
     "TITULO": "Configuración",

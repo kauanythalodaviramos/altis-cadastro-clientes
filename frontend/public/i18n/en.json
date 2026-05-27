@@ -135,7 +135,9 @@
     "EMO_ICONE": "Icon",
     "TAG_TITULO": "Tags",
     "TAG_NOVA": "New tag",
-    "TAG_VAZIO": "You don't have any tags yet."
+    "TAG_VAZIO": "You don't have any tags yet.",
+    "CONFIRMAR_EXCLUIR_EMO": "Delete the mood \"{{nome}}\"? Blocked if there are photos using it.",
+    "CONFIRMAR_EXCLUIR_TAG": "Delete tag \"{{nome}}\"?"
   },
   "CONFIG": {
     "TITULO": "Settings",
