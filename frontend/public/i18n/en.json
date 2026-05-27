@@ -1,10 +1,23 @@
 {
   "APP": {
     "TITLE": "Client Registry",
+    "NAV_DASHBOARD": "Dashboard",
     "NAV_CLIENTES": "Clients",
     "NAV_ALBUM": "Album",
     "NAV_CONFIG": "Settings",
     "NAV_SAIR": "Sign out"
+  },
+  "DASHBOARD": {
+    "TITULO": "Dashboard",
+    "CLIENTES": "Clients",
+    "FOTOS": "Photos",
+    "LIKES": "Likes",
+    "EMOCOES": "Moods",
+    "FOTOS_POR_EMOCAO": "Photos by mood",
+    "CLIENTES_POR_UF": "Clients by state",
+    "TOP_FOTOS": "Top 5 most loved photos",
+    "SEM_DADOS": "No data yet. Add clients and photos!",
+    "SEM_FOTOS": "No photos yet."
   },
   "AUTH": {
     "LOGIN_TITULO": "Sign in",
@@ -38,6 +51,7 @@
   "CLIENTES": {
     "TITULO": "Clients",
     "BTN_NOVO": "+ New client",
+    "BTN_EXPORT": "Export CSV",
     "BUSCAR": "Search by name or CPF",
     "BUSCAR_PLACEHOLDER": "Type part of the name or CPF...",
     "COL_NOME": "Name",

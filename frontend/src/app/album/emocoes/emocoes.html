@@ -22,10 +22,14 @@
       <article class="emo-card" [style.animationDelay]="(i * 40) + 'ms'">
         <div class="emo-color-bar" [style.background]="e.cor || '#6c757d'"></div>
         <div class="emo-body">
-          <div class="emo-nome">{{ e.nome }}</div>
-          @if (e.icone) {
-            <div class="emo-icone small text-muted">{{ e.icone }}</div>
-          }
+          <div class="emo-header">
+            @if (e.icone) {
+              <span class="emo-icon-circle" [style.background]="e.cor || '#6c757d'">
+                <i class="bi bi-{{ e.icone }}"></i>
+              </span>
+            }
+            <div class="emo-nome">{{ e.nome }}</div>
+          </div>
           <div class="emo-acoes mt-2">
             <button type="button" class="btn btn-sm btn-outline-primary btn-anim" (click)="abrirEditar(e)">{{ 'ALBUM.BTN_EDITAR' | translate }}</button>
             <button type="button" class="btn btn-sm btn-outline-danger btn-anim" (click)="excluir(e)">{{ 'ALBUM.BTN_EXCLUIR' | translate }}</button>
@@ -75,10 +79,15 @@
           <div>
             <label class="form-label">{{ 'ALBUM.EMO_ICONE' | translate }}</label>
             <div class="icone-grid">
-              <button type="button" class="icone-btn" [class.active]="formIcone() === ''" (click)="setIcone('')">—</button>
+              <button type="button" class="icone-btn icone-empty" [class.active]="formIcone() === ''" (click)="setIcone('')" title="Sem icone">
+                <i class="bi bi-slash-circle"></i>
+              </button>
               @for (i of icones; track i) {
-                <button type="button" class="icone-btn" [class.active]="formIcone() === i" (click)="setIcone(i)">
-                  {{ i }}
+                <button type="button" class="icone-btn"
+                        [class.active]="formIcone() === i"
+                        (click)="setIcone(i)"
+                        [title]="i">
+                  <i class="bi bi-{{ i }}"></i>
                 </button>
               }
             </div>

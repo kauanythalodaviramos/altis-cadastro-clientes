@@ -1,10 +1,23 @@
 {
   "APP": {
     "TITLE": "Registro de Clientes",
+    "NAV_DASHBOARD": "Panel",
     "NAV_CLIENTES": "Clientes",
     "NAV_ALBUM": "Álbum",
     "NAV_CONFIG": "Configuración",
     "NAV_SAIR": "Cerrar sesión"
+  },
+  "DASHBOARD": {
+    "TITULO": "Panel",
+    "CLIENTES": "Clientes",
+    "FOTOS": "Fotos",
+    "LIKES": "Me gusta",
+    "EMOCOES": "Emociones",
+    "FOTOS_POR_EMOCAO": "Fotos por emoción",
+    "CLIENTES_POR_UF": "Clientes por estado",
+    "TOP_FOTOS": "Top 5 fotos más amadas",
+    "SEM_DADOS": "Sin datos aún. ¡Agrega clientes y fotos!",
+    "SEM_FOTOS": "Aún no hay fotos."
   },
   "AUTH": {
     "LOGIN_TITULO": "Iniciar sesión",
@@ -38,6 +51,7 @@
   "CLIENTES": {
     "TITULO": "Clientes",
     "BTN_NOVO": "+ Nuevo cliente",
+    "BTN_EXPORT": "Exportar CSV",
     "BUSCAR": "Buscar por nombre o CPF",
     "BUSCAR_PLACEHOLDER": "Escribe parte del nombre o CPF...",
     "COL_NOME": "Nombre",

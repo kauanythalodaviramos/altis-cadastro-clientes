@@ -74,7 +74,7 @@ export class AuthService {
       tap(() => {
         const u = this._user();
         if (u) {
-          const updated = { ...u, temFoto: true };
+          const updated = { ...u, temFoto: true, updatedAt: new Date().toISOString() };
           localStorage.setItem(USER_KEY, JSON.stringify(updated));
           this._user.set(updated);
         }
@@ -87,7 +87,7 @@ export class AuthService {
       tap(() => {
         const u = this._user();
         if (u) {
-          const updated = { ...u, temFoto: false };
+          const updated = { ...u, temFoto: false, updatedAt: new Date().toISOString() };
           localStorage.setItem(USER_KEY, JSON.stringify(updated));
           this._user.set(updated);
         }
@@ -95,11 +95,12 @@ export class AuthService {
     );
   }
 
+  /** URL para a foto do user. ESTAVEL: so muda quando user atualiza foto (updatedAt muda). */
   fotoUrl(): string {
     const u = this._user();
     if (!u || !u.temFoto) return '';
-    // Cache buster: muda quando user atualiza foto
-    return `${this.baseUrl}/me/foto?ts=${u.updatedAt ?? Date.now()}`;
+    // Usa updatedAt como cache buster - estavel entre re-renders
+    return `${this.baseUrl}/me/foto?v=${encodeURIComponent(u.updatedAt ?? '')}`;
   }
 
   private storeAuth(resp: JwtResponse): void {

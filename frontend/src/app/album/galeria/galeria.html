@@ -239,11 +239,20 @@
 <!-- ===== Modal Detalhe ===== -->
 @if (fotoDetalhe(); as foto) {
   <div class="modal-backdrop-custom" (click)="fecharDetalhe()"></div>
-  <div class="modal-custom">
-    <div class="modal-dialog modal-dialog-centered modal-xl" (click)="$event.stopPropagation()">
+  <div class="modal-custom modal-fullscreen-custom">
+    <div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
       <div class="modal-content border-0 shadow-lg detalhe-content">
         <div class="row g-0">
           <div class="col-md-7 detalhe-imagem-col">
+            @if (detalheIndex() && detalheIndex()!.total > 1) {
+              <button type="button" class="nav-arrow nav-prev" (click)="navegarDetalhe(-1)" title="Anterior" aria-label="Anterior">
+                <i class="bi bi-chevron-left"></i>
+              </button>
+              <button type="button" class="nav-arrow nav-next" (click)="navegarDetalhe(1)" title="Proxima" aria-label="Proxima">
+                <i class="bi bi-chevron-right"></i>
+              </button>
+              <span class="nav-counter">{{ detalheIndex()!.atual }} / {{ detalheIndex()!.total }}</span>
+            }
             <img appAuthImg [appAuthImg]="imagemUrl(foto.id)" alt="" class="detalhe-imagem" />
           </div>
           <div class="col-md-5 detalhe-painel">

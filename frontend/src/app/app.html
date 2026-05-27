@@ -6,6 +6,11 @@
 
     @if (auth.isAuthenticated()) {
       <div class="d-flex align-items-center gap-3">
+        <a routerLink="/dashboard"
+           routerLinkActive="active"
+           class="btn btn-outline-light btn-sm btn-nav">
+          <i class="bi bi-bar-chart-fill me-1"></i>{{ 'APP.NAV_DASHBOARD' | translate }}
+        </a>
         <a routerLink="/clientes"
            routerLinkActive="active"
            [routerLinkActiveOptions]="{ exact: false }"
@@ -25,7 +30,7 @@
                   aria-expanded="false">
             <span class="avatar-circle d-flex align-items-center justify-content-center">
               @if (auth.user()?.temFoto) {
-                <img [src]="auth.fotoUrl()" alt="" class="avatar-img" />
+                <img appAuthImg [appAuthImg]="auth.fotoUrl()" alt="" class="avatar-img" />
               } @else {
                 {{ (auth.user()?.nome || '?').charAt(0).toUpperCase() }}
               }
@@ -47,3 +52,5 @@
 <main class="container py-4 page-enter">
   <router-outlet></router-outlet>
 </main>
+
+<app-toast-container></app-toast-container>

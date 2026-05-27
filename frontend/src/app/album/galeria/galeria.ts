@@ -90,6 +90,34 @@ export class Galeria implements OnInit {
     }
   }
 
+  @HostListener('document:keydown.arrowleft')
+  onArrowLeft(): void {
+    if (this.fotoDetalhe() && !this.editando()) this.navegarDetalhe(-1);
+  }
+
+  @HostListener('document:keydown.arrowright')
+  onArrowRight(): void {
+    if (this.fotoDetalhe() && !this.editando()) this.navegarDetalhe(1);
+  }
+
+  protected navegarDetalhe(direcao: -1 | 1): void {
+    const atual = this.fotoDetalhe();
+    if (!atual) return;
+    const lista = this.fotos();
+    const idx = lista.findIndex(f => f.id === atual.id);
+    if (idx < 0) return;
+    const novoIdx = (idx + direcao + lista.length) % lista.length;
+    this.abrirDetalhe(lista[novoIdx]);
+  }
+
+  protected detalheIndex(): { atual: number; total: number } | null {
+    const atual = this.fotoDetalhe();
+    if (!atual) return null;
+    const lista = this.fotos();
+    const idx = lista.findIndex(f => f.id === atual.id);
+    return idx >= 0 ? { atual: idx + 1, total: lista.length } : null;
+  }
+
   // ============ Loaders ============
   private carregarReferencias(): void {
     forkJoin({

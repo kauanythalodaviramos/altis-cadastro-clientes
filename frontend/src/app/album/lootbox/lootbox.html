@@ -100,7 +100,10 @@
         @if (state() === 'revealing' || state() === 'done') {
           <div class="reveal-grid">
             @for (foto of fotosSorteadas(); track foto.id; let i = $index) {
-              <div class="reveal-card" [style.animationDelay]="(i * 600) + 'ms'">
+              <div class="reveal-card"
+                   [style.animationDelay]="(i * 600) + 'ms'"
+                   [ngStyle]="{ '--spot-color': foto.emocao.cor || '#ffffff' }">
+                <div class="spotlight"></div>
                 <div class="reveal-thumb-wrap">
                   <img appAuthImg [appAuthImg]="imagemUrl(foto.id)" alt="" class="reveal-thumb" />
                   <div class="reveal-rank">#{{ i + 1 }}</div>

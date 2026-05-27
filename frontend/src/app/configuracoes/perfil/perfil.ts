@@ -5,10 +5,11 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { AuthService } from '../../auth/auth.service';
+import { AuthImgDirective } from '../../shared/directives/auth-img.directive';
 
 @Component({
   selector: 'app-perfil',
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule, AuthImgDirective],
   templateUrl: './perfil.html',
   styleUrl: './perfil.scss'
 })

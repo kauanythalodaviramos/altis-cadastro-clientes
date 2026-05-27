@@ -168,9 +168,11 @@
 }
 
 .reveal-card {
+  --spot-color: #ffffff;
   background: var(--altis-card-bg);
   border-radius: 1rem;
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
   box-shadow: 0 10px 30px -10px var(--altis-shadow-color);
   opacity: 0;
   transform: scale(0.5) rotate(-5deg);
@@ -178,6 +180,53 @@
 }
 @keyframes revealCard {
   to { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+/* Spotlight: feixe de luz colorido (cor da emocao) brotando da caixinha */
+.spotlight {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  width: 200%;
+  height: 380px;
+  transform: translateX(-50%);
+  background:
+    radial-gradient(ellipse at center bottom,
+      var(--spot-color) 0%,
+      color-mix(in srgb, var(--spot-color) 60%, transparent) 25%,
+      transparent 70%);
+  filter: blur(8px);
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+  animation: spotlight 1100ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation-delay: inherit;
+  mix-blend-mode: screen;
+}
+
+@keyframes spotlight {
+  0%   { opacity: 0; transform: translateX(-50%) scaleY(0.2); }
+  30%  { opacity: 1; transform: translateX(-50%) scaleY(1); }
+  100% { opacity: 0.5; transform: translateX(-50%) scaleY(1); }
+}
+
+/* Glow ao redor do card aparece junto com o spotlight */
+.reveal-card::after {
+  content: '';
+  position: absolute;
+  inset: -10px;
+  border-radius: 1.25rem;
+  box-shadow: 0 0 0 0 var(--spot-color);
+  opacity: 0;
+  pointer-events: none;
+  animation: cardGlow 1100ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation-delay: inherit;
+}
+
+@keyframes cardGlow {
+  0%   { opacity: 0; box-shadow: 0 0 0 0 var(--spot-color); }
+  40%  { opacity: 0.9; box-shadow: 0 0 40px 8px var(--spot-color); }
+  100% { opacity: 0.5; box-shadow: 0 0 24px 4px var(--spot-color); }
 }
 
 .reveal-thumb-wrap {

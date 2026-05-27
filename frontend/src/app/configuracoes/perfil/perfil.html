@@ -13,8 +13,10 @@
     <!-- Avatar -->
     <div class="d-flex align-items-center gap-3 mb-4 avatar-block">
       <div class="avatar-big">
-        @if (fotoExibida()) {
-          <img [src]="fotoExibida()" alt="" />
+        @if (previewUrl()) {
+          <img [src]="previewUrl()" alt="" />
+        } @else if (auth.user()?.temFoto) {
+          <img appAuthImg [appAuthImg]="auth.fotoUrl()" alt="" />
         } @else {
           <span>{{ (auth.user()?.nome || '?').charAt(0).toUpperCase() }}</span>
         }

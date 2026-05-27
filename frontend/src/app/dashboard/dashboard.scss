@@ -1,0 +1,104 @@
+:host { display: block; }
+
+.stat-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.stat-card:hover {
+  transform: translateY(-3px);
+}
+.stat-card .stat-icon {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  font-size: 2.5rem;
+  opacity: 0.18;
+  line-height: 1;
+}
+.stat-value {
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.stat-label {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--bs-secondary-color);
+  margin-top: 0.5rem;
+}
+.stat-1 .stat-icon { color: #0d6efd; }
+.stat-2 .stat-icon { color: #6610f2; }
+.stat-3 .stat-icon { color: #dc3545; }
+.stat-4 .stat-icon { color: #fd7e14; }
+
+.chart-wrap {
+  position: relative;
+  height: 280px;
+}
+
+/* Top fotos */
+.top-fotos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+.top-foto-card {
+  position: relative;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 2px 6px var(--altis-shadow-color);
+  background: var(--altis-card-bg);
+  transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.top-foto-card:hover {
+  transform: translateY(-2px);
+}
+.top-rank {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  background: linear-gradient(135deg, #ffd700, #ff9800);
+  color: #fff;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  z-index: 2;
+}
+.top-thumb {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+}
+.top-info {
+  padding: 0.5rem 0.75rem 0.625rem;
+}
+.top-titulo {
+  font-weight: 600;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.top-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+}
+.top-emocao {
+  color: #fff;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+.top-likes {
+  color: #dc3545;
+  font-weight: 600;
+}

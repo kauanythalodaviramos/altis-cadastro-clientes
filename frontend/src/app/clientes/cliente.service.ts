@@ -28,7 +28,14 @@ export class ClienteService {
     return this.http.put<Cliente>(`${this.baseUrl}/${id}`, cliente);
   }
 
-  excluir(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  excluir(id: number, cascade = false): Observable<void> {
+    const params = cascade ? new HttpParams().set('cascade', 'true') : undefined;
+    return this.http.delete<void>(`${this.baseUrl}/${id}`, { params });
+  }
+
+  exportarCsv(filtro?: string): Observable<Blob> {
+    let params = new HttpParams();
+    if (filtro && filtro.trim()) params = params.set('filtro', filtro.trim());
+    return this.http.get(`${this.baseUrl}/export`, { params, responseType: 'blob' });
   }
 }

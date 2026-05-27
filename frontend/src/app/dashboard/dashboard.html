@@ -1,0 +1,105 @@
+<h1 class="h3 mb-4">{{ 'DASHBOARD.TITULO' | translate }}</h1>
+
+@if (carregando()) {
+  <div class="text-center text-muted py-5">
+    <div class="spinner-border text-primary"></div>
+  </div>
+} @else if (erro()) {
+  <div class="alert alert-danger">{{ erro() }}</div>
+} @else if (stats(); as s) {
+  <!-- Counters -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-3 col-6">
+      <div class="card border-0 shadow-sm stat-card stat-1">
+        <div class="card-body">
+          <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+          <div class="stat-value">{{ s.totalClientes }}</div>
+          <div class="stat-label">{{ 'DASHBOARD.CLIENTES' | translate }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="card border-0 shadow-sm stat-card stat-2">
+        <div class="card-body">
+          <div class="stat-icon"><i class="bi bi-image-fill"></i></div>
+          <div class="stat-value">{{ s.totalFotos }}</div>
+          <div class="stat-label">{{ 'DASHBOARD.FOTOS' | translate }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="card border-0 shadow-sm stat-card stat-3">
+        <div class="card-body">
+          <div class="stat-icon"><i class="bi bi-heart-fill"></i></div>
+          <div class="stat-value">{{ s.totalLikes }}</div>
+          <div class="stat-label">{{ 'DASHBOARD.LIKES' | translate }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="card border-0 shadow-sm stat-card stat-4">
+        <div class="card-body">
+          <div class="stat-icon"><i class="bi bi-emoji-smile-fill"></i></div>
+          <div class="stat-value">{{ s.totalEmocoes }}</div>
+          <div class="stat-label">{{ 'DASHBOARD.EMOCOES' | translate }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <!-- Pizza emocoes -->
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">{{ 'DASHBOARD.FOTOS_POR_EMOCAO' | translate }}</h5>
+          @if (s.fotosPorEmocao.length > 0) {
+            <div class="chart-wrap"><canvas #pieCanvas></canvas></div>
+          } @else {
+            <p class="text-muted small text-center py-4">{{ 'DASHBOARD.SEM_DADOS' | translate }}</p>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Barras UF -->
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">{{ 'DASHBOARD.CLIENTES_POR_UF' | translate }}</h5>
+          @if (s.totalClientes > 0) {
+            <div class="chart-wrap"><canvas #barCanvas></canvas></div>
+          } @else {
+            <p class="text-muted small text-center py-4">{{ 'DASHBOARD.SEM_DADOS' | translate }}</p>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top fotos -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title">{{ 'DASHBOARD.TOP_FOTOS' | translate }}</h5>
+      @if (s.topFotos.length > 0) {
+        <div class="top-fotos-grid">
+          @for (foto of s.topFotos; track foto.id; let i = $index) {
+            <div class="top-foto-card">
+              <span class="top-rank">#{{ i + 1 }}</span>
+              <img appAuthImg [appAuthImg]="imagemUrl(foto.id)" alt="" class="top-thumb" />
+              <div class="top-info">
+                <div class="top-titulo">{{ foto.titulo || '—' }}</div>
+                <div class="top-meta">
+                  <span class="top-emocao" [style.background]="foto.emocao.cor || 'var(--bs-primary)'">{{ foto.emocao.nome }}</span>
+                  <span class="top-likes"><i class="bi bi-heart-fill"></i> {{ foto.likesCount }}</span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="text-muted small text-center py-4">{{ 'DASHBOARD.SEM_FOTOS' | translate }}</p>
+      }
+    </div>
+  </div>
+}

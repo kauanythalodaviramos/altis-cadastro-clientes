@@ -1,10 +1,23 @@
 {
   "APP": {
     "TITLE": "Cadastro de Clientes",
+    "NAV_DASHBOARD": "Painel",
     "NAV_CLIENTES": "Clientes",
     "NAV_ALBUM": "Álbum",
     "NAV_CONFIG": "Configurações",
     "NAV_SAIR": "Sair"
+  },
+  "DASHBOARD": {
+    "TITULO": "Painel",
+    "CLIENTES": "Clientes",
+    "FOTOS": "Fotos",
+    "LIKES": "Curtidas",
+    "EMOCOES": "Emoções",
+    "FOTOS_POR_EMOCAO": "Fotos por emoção",
+    "CLIENTES_POR_UF": "Clientes por UF",
+    "TOP_FOTOS": "Top 5 fotos mais amadas",
+    "SEM_DADOS": "Sem dados ainda. Adicione clientes e fotos!",
+    "SEM_FOTOS": "Nenhuma foto cadastrada ainda."
   },
   "AUTH": {
     "LOGIN_TITULO": "Entrar",
@@ -38,6 +51,7 @@
   "CLIENTES": {
     "TITULO": "Clientes",
     "BTN_NOVO": "+ Novo cliente",
+    "BTN_EXPORT": "Exportar CSV",
     "BUSCAR": "Buscar por nome ou CPF",
     "BUSCAR_PLACEHOLDER": "Digite parte do nome ou CPF...",
     "COL_NOME": "Nome",

@@ -9,10 +9,13 @@ import br.com.altis.cadastroclientes.entity.User;
 import br.com.altis.cadastroclientes.exception.DuplicateResourceException;
 import br.com.altis.cadastroclientes.exception.ResourceNotFoundException;
 import br.com.altis.cadastroclientes.repository.ClienteRepository;
+import br.com.altis.cadastroclientes.repository.FotoRepository;
 import br.com.altis.cadastroclientes.security.CurrentUserHelper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -21,6 +24,7 @@ import java.util.List;
 public class ClienteService {
 
     private final ClienteRepository clienteRepository;
+    private final FotoRepository fotoRepository;
     private final CurrentUserHelper currentUserHelper;
 
     @Transactional
@@ -97,9 +101,67 @@ public class ClienteService {
     }
 
     @Transactional
-    public void excluir(Long id) {
+    public void excluir(Long id, boolean cascade) {
         Cliente cliente = buscarDoUsuario(id);
+        User usuario = cliente.getUsuario();
+
+        long countFotos = fotoRepository.countByUsuarioAndClienteId(usuario, id);
+        if (countFotos > 0) {
+            if (!cascade) {
+                throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Existem " + countFotos + " foto(s) vinculadas a este cliente. Confirme a exclusao em cascata."
+                );
+            }
+            // Cascade: deleta todas as fotos do cliente primeiro (preserva FOTO_TAGS via JPA)
+            List<br.com.altis.cadastroclientes.entity.Foto> fotos = fotoRepository.findByUsuarioAndClienteId(usuario, id);
+            fotoRepository.deleteAll(fotos);
+        }
+
         clienteRepository.delete(cliente);
+    }
+
+    @Transactional(readOnly = true)
+    public long contarFotos(Long clienteId) {
+        Cliente cliente = buscarDoUsuario(clienteId);
+        return fotoRepository.countByUsuarioAndClienteId(cliente.getUsuario(), clienteId);
+    }
+
+    @Transactional(readOnly = true)
+    public String exportarCsv(String filtro) {
+        List<ClienteResponseDTO> clientes = listar(filtro);
+        StringBuilder sb = new StringBuilder();
+        sb.append("ID;Nome;CPF;Telefone;CEP;Logradouro;Numero;Complemento;Bairro;Cidade;UF;Observacoes;DataCadastro\n");
+        for (ClienteResponseDTO c : clientes) {
+            sb.append(c.getId()).append(';')
+                .append(esc(c.getNome())).append(';')
+                .append(esc(c.getCpf())).append(';')
+                .append(esc(c.getTelefone())).append(';');
+            if (c.getEndereco() != null) {
+                sb.append(esc(c.getEndereco().getCep())).append(';')
+                    .append(esc(c.getEndereco().getLogradouro())).append(';')
+                    .append(esc(c.getEndereco().getNumero())).append(';')
+                    .append(esc(c.getEndereco().getComplemento())).append(';')
+                    .append(esc(c.getEndereco().getBairro())).append(';')
+                    .append(esc(c.getEndereco().getCidade())).append(';')
+                    .append(esc(c.getEndereco().getUf())).append(';');
+            } else {
+                sb.append(";;;;;;;");
+            }
+            sb.append(esc(c.getObservacoes())).append(';')
+                .append(c.getDataCadastro() != null ? c.getDataCadastro().toString() : "")
+                .append('\n');
+        }
+        return sb.toString();
+    }
+
+    private static String esc(String v) {
+        if (v == null) return "";
+        String s = v.replace("\"", "\"\"").replace("\n", " ").replace("\r", " ");
+        if (s.contains(";") || s.contains("\"") || s.contains(",")) {
+            return "\"" + s + "\"";
+        }
+        return s;
     }
 
     /** Garante que o cliente pertence ao usuario logado. 404 caso contrario. */

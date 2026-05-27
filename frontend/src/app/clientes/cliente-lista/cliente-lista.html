@@ -1,6 +1,11 @@
 <div class="d-flex align-items-center justify-content-between mb-3">
   <h1 class="h3 mb-0">{{ 'CLIENTES.TITULO' | translate }}</h1>
-  <a routerLink="/clientes/novo" class="btn btn-primary">{{ 'CLIENTES.BTN_NOVO' | translate }}</a>
+  <div class="d-flex gap-2">
+    <button type="button" class="btn btn-outline-secondary" (click)="exportarCsv()" title="{{ 'CLIENTES.BTN_EXPORT' | translate }}">
+      <i class="bi bi-download me-1"></i>{{ 'CLIENTES.BTN_EXPORT' | translate }}
+    </button>
+    <a routerLink="/clientes/novo" class="btn btn-primary">{{ 'CLIENTES.BTN_NOVO' | translate }}</a>
+  </div>
 </div>
 
 @if (mensagem()) {

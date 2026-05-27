@@ -5,11 +5,14 @@ import br.com.altis.cadastroclientes.dto.ClienteResponseDTO;
 import br.com.altis.cadastroclientes.service.ClienteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -31,6 +34,18 @@ public class ClienteController {
         return clienteService.listar(filtro);
     }
 
+    @GetMapping(value = "/export", produces = "text/csv;charset=UTF-8")
+    public ResponseEntity<byte[]> exportCsv(@RequestParam(name = "filtro", required = false) String filtro) {
+        String csv = clienteService.exportarCsv(filtro);
+        // BOM UTF-8 para Excel reconhecer acentos
+        byte[] body = (new String(new byte[]{(byte)0xEF,(byte)0xBB,(byte)0xBF}, StandardCharsets.ISO_8859_1) + csv)
+            .getBytes(StandardCharsets.UTF_8);
+        return ResponseEntity.ok()
+            .contentType(MediaType.parseMediaType("text/csv;charset=UTF-8"))
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=clientes.csv")
+            .body(body);
+    }
+
     @GetMapping("/{id}")
     public ClienteResponseDTO buscar(@PathVariable Long id) {
         return clienteService.buscarPorId(id);
@@ -43,7 +58,10 @@ public class ClienteController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void excluir(@PathVariable Long id) {
-        clienteService.excluir(id);
+    public void excluir(
+        @PathVariable Long id,
+        @RequestParam(value = "cascade", defaultValue = "false") boolean cascade
+    ) {
+        clienteService.excluir(id, cascade);
     }
 }
