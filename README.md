@@ -1,101 +1,105 @@
-# Cadastro de Clientes — Altis
+---
 
-Aplicação fullstack completa com **cadastro de clientes multi-usuário**, **álbum de fotos** com sistema de emoções/tags/likes e **lootbox animado**, e **configurações** de acessibilidade (tema, fonte, 3 idiomas).
+# Client and Social Media Registration
 
-Projeto avaliativo desenvolvido para a Altis Sistemas.
+A complete fullstack application featuring **multi-user client registration**, a **photo album** with an emotions/tags/likes system and an **animated lootbox**, and **accessibility settings** (theme, font size, 3 languages).
+
+An evaluative project developed by Charlotte.
 
 ---
 
 ## Stack
 
-| Camada | Tecnologia |
+| Layer | Technology |
 |---|---|
 | Frontend | Angular 21 + Bootstrap 5.3 + ngx-mask + ngx-translate |
 | Backend | Java 17+ + Spring Boot 4 + Spring Security 6 + Spring Data JPA + Hibernate Validator + jjwt 0.12 |
-| Banco de dados | Oracle Database 21c Express Edition |
-| Autenticação | JWT (HS256) + BCrypt + middleware stateless |
+| Database | Oracle Database 21c Express Edition |
+| Authentication | JWT (HS256) + BCrypt + stateless middleware |
 
 ---
 
-## Funcionalidades
+## Features
 
-### Cadastro de usuário e autenticação
-- **Registro** com nome, email e senha (BCrypt hash).
-- **Login** com email/senha retorna JWT.
-- **Persistência da sessão** via localStorage (sobrevive a F5).
-- **Logout** limpa token e redireciona.
-- **Multi-tenancy**: cada usuário só vê seus próprios clientes, fotos, emoções e tags.
+### User Registration & Authentication
 
-### Cadastro de clientes (CRUD completo)
-- Nome (mín. 10), CPF (validação oficial + único por usuário), telefone WhatsApp (10-11 dígitos, único por usuário), endereço estruturado, observações (máx. 100).
-- Validações **espelhadas no frontend e backend**.
-- Filtro inteligente por nome OU CPF (com debounce 300ms).
-- Editar, excluir (com confirmação), atualização automática da lista.
+- **Sign up** with name, email, and password (BCrypt hash).
+- **Login** with email/password returns a JWT.
+- **Session persistence** via localStorage (survives page refresh).
+- **Logout** clears the token and redirects.
+- **Multi-tenancy**: each user only sees their own clients, photos, emotions, and tags.
 
-### Tela de Configurações
+### Client Registration (Full CRUD)
 
-**Perfil** (`/configuracoes/perfil`)
-- Editar nome, email (exige senha atual), foto de perfil (JPG/PNG/WebP até 5MB).
-- Modal "Alterar senha" com confirmação.
-- Avatar circular aparece no navbar quando definido.
+- Name (min. 10 chars), CPF (official validation + unique per user), WhatsApp phone (10–11 digits, unique per user), structured address, notes (max. 100 chars).
+- Validations **mirrored on both frontend and backend**.
+- Smart filter by name OR CPF (with 300ms debounce).
+- Edit, delete (with confirmation), automatic list refresh.
 
-**Acessibilidade** (`/configuracoes/acessibilidade`)
-- **Tema**: Claro ou Escuro (Bootstrap `data-bs-theme`, transição suave).
-- **Tamanho de fonte**: 4 níveis (14/16/18/20px) com preview em tempo real.
-- **Idioma**: Português, Inglês ou Espanhol — TODOS os textos da UI mudam instantaneamente.
-- Preferências persistem em localStorage, aplicadas no boot (sem flash visual).
+### Settings Screen
 
-### Álbum de fotos (`/album`)
+**Profile** (`/configuracoes/perfil`)
+- Edit name, email (requires current password), profile picture (JPG/PNG/WebP up to 5MB).
+- "Change password" modal with confirmation.
+- Circular avatar appears in the navbar once defined.
 
-**Galeria** (`/album/galeria`)
-- Grid responsivo de fotos com sidebar de filtros à esquerda.
-- Filtros combinados: emoções (chips coloridos), tags (chips), cliente, favoritismo (Amadas/Medianas/Menos), ordenação.
-- Upload de foto via modal com preview, escolha de emoção, cliente opcional, tags (criação inline).
-- Botão coração com **animação de pulse** (1 → 1.45 → 1) ao curtir.
-- Click no card abre modal detalhe com imagem grande, edição de metadados e exclusão.
+**Accessibility** (`/configuracoes/acessibilidade`)
+- **Theme**: Light or Dark (Bootstrap `data-bs-theme`, smooth transition).
+- **Font size**: 4 levels (14/16/18/20px) with real-time preview.
+- **Language**: Portuguese, English, or Spanish — ALL UI text changes instantly.
+- Preferences persist in localStorage, applied on boot (no visual flash).
 
-**Lootbox** (`/album/lootbox`) — *o show*
-- Filtros para definir o pool de fotos elegíveis.
-- Botão "Abrir caixinha" dispara:
-  1. Caixa balança 3 vezes (`caixaShake`, 900ms).
-  2. Pop com 6 partículas em explosão radial (`sparkle`, 300ms).
-  3. Reveal sequencial das 3 fotos top-rank com `revealCard` (scale 0.5 → 1 com rotação, delay 600ms cada).
-- Badges dourados com ranking, contador de likes em cada card.
-- Estado vazio amigável se filtros não retornarem nada.
+### Photo Album (`/album`)
 
-**Emoções** (`/album/emocoes`)
-- 8 emoções padrão criadas automaticamente no registro (Feliz, Triste, Amor, Calmo, Animado, Nostálgico, Inspirado, Outro).
-- CRUD com modal: nome, picker de 10 cores, picker de 12 ícones sugeridos.
-- Excluir bloqueia se houver fotos vinculadas (HTTP 409 amigável).
+**Gallery** (`/album/galeria`)
+- Responsive photo grid with a filter sidebar on the left.
+- Combined filters: emotions (colored chips), tags (chips), client, favoriting (Loved/Average/Less), sorting.
+- Photo upload via modal with preview, emotion selection, optional client, tags (inline creation).
+- Heart button with **pulse animation** (1 → 1.45 → 1) on like.
+- Clicking a card opens a detail modal with a large image, metadata editing, and deletion.
+
+**Lootbox** (`/album/lootbox`) — *the showstopper*
+- Filters to define the pool of eligible photos.
+- "Open box" button triggers:
+  1. Box shakes 3 times (`caixaShake`, 900ms).
+  2. Pop with 6 particles in a radial explosion (`sparkle`, 300ms).
+  3. Sequential reveal of the 3 top-ranked photos with `revealCard` (scale 0.5 → 1 with rotation, 600ms delay each).
+- Golden badges with ranking, like counter on each card.
+- Friendly empty state if filters return nothing.
+
+**Emotions** (`/album/emocoes`)
+- 8 default emotions created automatically on registration (Happy, Sad, Love, Calm, Excited, Nostalgic, Inspired, Other).
+- CRUD with modal: name, 10-color picker, 12-icon suggested picker.
+- Deletion is blocked if photos are linked (friendly HTTP 409).
 
 **Tags** (`/album/tags`)
-- Cloud de chips `#nome` com criação inline (Enter funciona) e remoção individual.
-- Animação `tagEnter` com bouncy spring overshoot.
-- Excluir tag remove de todas as fotos (CASCADE).
+- Cloud of `#name` chips with inline creation (Enter works) and individual removal.
+- `tagEnter` animation with bouncy spring overshoot.
+- Deleting a tag removes it from all photos (CASCADE).
 
-**Sistema de likes**
-- Cada like incrementa `likesCount` da foto.
-- Categoria derivada: `< 3 = menos`, `3-10 = mediana`, `> 10 = amada` (cores diferentes).
-- Lootbox prioriza por filtro de favoritismo + ordena por likes desc.
+**Likes System**
+- Each like increments the photo's `likesCount`.
+- Derived category: `< 3 = less`, `3–10 = average`, `> 10 = loved` (different colors).
+- Lootbox prioritizes by favoriting filter + sorts by likes desc.
 
-### Animações e design
+### Animations & Design
 
-Princípios respeitados em todo o app:
-- Durações **150-300ms** para micro-interações, 600ms para destaques.
-- Curva `cubic-bezier(0.4, 0, 0.2, 1)` (Material standard) consistente.
-- Hover de botões: lift + sombra suave.
+Principles respected throughout the app:
+- Durations **150–300ms** for micro-interactions, 600ms for highlights.
+- Consistent `cubic-bezier(0.4, 0, 0.2, 1)` curve (Material standard).
+- Button hover: lift + soft shadow.
 - Click feedback: scale(0.98).
-- Modais: fade do backdrop + slide-up do conteúdo.
-- Cards em grid: stagger fade-in (35-50ms entre cada).
-- **`prefers-reduced-motion` respeitado** — sistema operacional do usuário desabilita animações se preferir.
+- Modals: backdrop fade + content slide-up.
+- Grid cards: stagger fade-in (35–50ms between each).
+- **`prefers-reduced-motion` respected** — animations are disabled if the user's OS prefers it.
 
 ---
 
-## Estrutura do repositório
+## Repository Structure
 
 ```
 altis-cadastro-clientes/
-├── backend/                                Spring Boot — API REST
+├── backend/                                Spring Boot — REST API
 │   ├── pom.xml
 │   └── src/main/java/br/com/altis/cadastroclientes/
 │       ├── CadastroClientesApplication.java
@@ -109,66 +113,64 @@ altis-cadastro-clientes/
 │       └── exception/{GlobalExceptionHandler, DuplicateResourceException, ResourceNotFoundException}.java
 ├── frontend/                               Angular — UI
 │   └── src/app/
-│       ├── auth/                           AuthService, interceptor, guard, telas login/registrar
+│       ├── auth/                           AuthService, interceptor, guard, login/register screens
 │       ├── core/                           ThemeService, FontService, LanguageService
-│       ├── clientes/                       Cliente lista, form, modelo, service
-│       ├── album/                          Galeria, lootbox, emocoes, tags, services
-│       ├── configuracoes/                  Shell + Perfil + Acessibilidade
-│       └── shared/                         Validators, AuthImgDirective (carrega imagens via Bearer)
+│       ├── clientes/                       Client list, form, model, service
+│       ├── album/                          Gallery, lootbox, emotions, tags, services
+│       ├── configuracoes/                  Shell + Profile + Accessibility
+│       └── shared/                         Validators, AuthImgDirective (loads images via Bearer)
 │   └── public/i18n/                        pt.json, en.json, es.json
 ├── docs/
-│   ├── 01_setup_oracle.sql                 cria usuário PROJETO no XEPDB1
-│   └── 02_reset_schema_para_v2.sql         limpa tabelas para nova migração
+│   ├── 01_setup_oracle.sql                 creates PROJETO user in XEPDB1
+│   └── 02_reset_schema_para_v2.sql         clears tables for new migration
 └── README.md
 ```
 
 ---
 
-## Pré-requisitos
+## Prerequisites
 
-- **Java 17+** (testado também em Java 19)
+- **Java 17+** (also tested on Java 19)
 - **Node.js 20 LTS** + npm
 - **Angular CLI** (`npm i -g @angular/cli`)
-- **Oracle Database 21c Express Edition** rodando localmente (porta 1521, PDB `XEPDB1`)
+- **Oracle Database 21c Express Edition** running locally (port 1521, PDB `XEPDB1`)
 - **Git**
 
 ---
 
-## Setup e execução — do zero
+## Setup & Running — From Scratch
 
-### 1. Clonar e configurar Oracle
-
-```bash
-git clone https://github.com/kauanythalodaviramos/altis-cadastro-clientes.git
-cd altis-cadastro-clientes
-```
-
-Conectado como SYSTEM no XEPDB1, criar o usuário da aplicação:
+### 1. Clone and configure Oracle
 
 ```bash
-sqlplus SYSTEM/<sua-senha>@//localhost:1521/XEPDB1 @docs/01_setup_oracle.sql
+git clone https://github.com/kauanythalodaviramos/social-clienty.git
+cd social-clienty
 ```
 
-> Cria usuário `PROJETO` / senha `Altis_2026` com permissões mínimas.
+Connected as SYSTEM in XEPDB1, create the application user:
 
-### 2. Subir o backend
+```bash
+sqlplus SYSTEM/<your-password>@//localhost:1521/XEPDB1 @docs/01_setup_oracle.sql
+```
+> Creates user `PROJETO` / password `Altis_2026` with minimal permissions.
+
+### 2. Start the backend
 
 ```bash
 cd backend
 ./mvnw spring-boot:run        # Linux/Mac
-# ou
+# or
 .\mvnw.cmd spring-boot:run    # Windows
 ```
 
-API sobe em `http://localhost:8080`. Hibernate cria as 6 tabelas automaticamente (`USERS`, `CLIENTES`, `EMOCOES`, `TAGS`, `FOTOS`, `FOTO_TAGS`) na primeira execução.
+API starts at `http://localhost:8080`. Hibernate creates the 6 tables automatically (`USERS`, `CLIENTS`, `EMOTIONS`, `TAGS`, `PHOTOS`, `PHOTO_TAGS`) on first run.
 
-> **Variáveis de ambiente opcionais** (defaults para dev local):
-> - `DB_USERNAME=PROJETO`, `DB_PASSWORD=Altis_2026`
-> - `JWT_SECRET=...` (string aleatória ≥ 32 chars — gerar com `openssl rand -base64 64`)
+> **Optional environment variables** (defaults for local dev):
+> - `JWT_SECRET=...` (random string ≥ 32 chars — generate with `openssl rand -base64 64`)
 
-### 3. Subir o frontend
+### 3. Start the frontend
 
-Em outro terminal:
+In another terminal:
 
 ```bash
 cd frontend
@@ -176,107 +178,109 @@ npm install
 ng serve
 ```
 
-Frontend sobe em `http://localhost:4200`. Acesse, registre uma conta e comece a usar.
+Frontend starts at `http://localhost:4200`. Open it, register an account, and start using it.
 
 ---
 
-## API REST
+## REST API
 
-Todos os endpoints (exceto `/api/auth/login` e `/api/auth/register`) exigem header:
+All endpoints (except `/api/auth/login` and `/api/auth/register`) require header:
 
 ```
 Authorization: Bearer <JWT>
 ```
 
-### Autenticação
+### Authentication
 
-| Método | Path | Descrição |
+| Method | Path | Description |
 |---|---|---|
-| `POST` | `/api/auth/register` | Cria usuário e retorna JWT |
-| `POST` | `/api/auth/login` | Autentica e retorna JWT |
-| `GET` | `/api/auth/me` | Dados do usuário logado |
-| `PUT` | `/api/auth/me` | Atualiza nome/email (senha exigida pra mudar email) |
-| `PUT` | `/api/auth/me/senha` | Altera senha |
-| `GET` `PUT` `DELETE` | `/api/auth/me/foto` | Avatar do usuário (BLOB) |
+| `POST` | `/api/auth/register` | Creates user and returns JWT |
+| `POST` | `/api/auth/login` | Authenticates and returns JWT |
+| `GET` | `/api/auth/me` | Logged-in user data |
+| `PUT` | `/api/auth/me` | Update name/email (password required to change email) |
+| `PUT` | `/api/auth/me/senha` | Change password |
+| `GET` `PUT` `DELETE` | `/api/auth/me/foto` | User avatar (BLOB) |
 
-### Clientes
+### Clients
 
-| Método | Path | Descrição |
+| Method | Path | Description |
 |---|---|---|
-| `POST` `GET` | `/api/clientes` | Cria / lista (com `?filtro=`) |
-| `GET` `PUT` `DELETE` | `/api/clientes/{id}` | Busca / atualiza / remove |
+| `POST` `GET` | `/api/clientes` | Create / list (with `?filtro=`) |
+| `GET` `PUT` `DELETE` | `/api/clientes/{id}` | Fetch / update / remove |
 
-### Álbum
+### Album
 
-| Método | Path | Descrição |
+| Method | Path | Description |
 |---|---|---|
-| `GET` `POST` `PUT` `DELETE` | `/api/emocoes[/{id}]` | CRUD de emoções |
-| `GET` `POST` `DELETE` | `/api/tags[/{id}]` | CRUD de tags |
+| `GET` `POST` `PUT` `DELETE` | `/api/emocoes[/{id}]` | Emotions CRUD |
+| `GET` `POST` `DELETE` | `/api/tags[/{id}]` | Tags CRUD |
 | `POST` (multipart) | `/api/fotos` | Upload (file, emocaoId, clienteId?, titulo?, descricao?, tags=csv) |
-| `GET` | `/api/fotos?emocoes=&tags=&clienteId=&favoritismo=&order=` | Lista com filtros |
-| `GET` | `/api/fotos/{id}/imagem` | Serve a imagem BLOB |
-| `GET` `PUT` `DELETE` | `/api/fotos/{id}` | Detalhes / edit metadata / remove |
-| `POST` `DELETE` | `/api/fotos/{id}/like` | Incrementa / decrementa likes |
-| `GET` | `/api/fotos/lootbox?{filtros}` | Top 3 por likes do filtro |
+| `GET` | `/api/fotos?emocoes=&tags=&clienteId=&favoritismo=&order=` | List with filters |
+| `GET` | `/api/fotos/{id}/imagem` | Serves the BLOB image |
+| `GET` `PUT` `DELETE` | `/api/fotos/{id}` | Details / edit metadata / remove |
+| `POST` `DELETE` | `/api/fotos/{id}/like` | Increment / decrement likes |
+| `GET` | `/api/fotos/lootbox?{filters}` | Top 3 by likes matching filters |
 
-### Formato de erro
+### Error Format
 
 ```json
 {
   "timestamp": "2026-05-26T22:00:00",
   "status": 400,
   "error": "Bad Request",
-  "message": "Dados invalidos",
-  "errors": { "cpf": "CPF invalido" }
+  "message": "Invalid data",
+  "errors": { "cpf": "Invalid CPF" }
 }
 ```
 
-O frontend mapeia `errors[campo]` para mensagens inline no formulário.
+The frontend maps `errors[field]` to inline messages in the form.
 
-### Status codes
+### Status Codes
 
-- `200`/`201`/`204` — sucesso
-- `400` — validação falhou (corpo com `errors` por campo)
-- `401` — token ausente/inválido ou credenciais erradas
-- `404` — recurso não existe ou não pertence ao usuário
-- `409` — conflito (email/CPF/telefone duplicado, ou emoção em uso)
-- `413` — arquivo > 5MB
+- `200`/`201`/`204` — success
+- `400` — validation failed (body with `errors` per field)
+- `401` — missing/invalid token or wrong credentials
+- `404` — resource doesn't exist or doesn't belong to the user
+- `409` — conflict (duplicate email/CPF/phone, or emotion in use)
+- `413` — file > 5MB
 
 ---
 
-## Decisões de projeto
+## Design Decisions
 
 ### Multi-tenancy
-- Cada entidade carrega `usuario_id` (FK). Repositories filtram automaticamente via `CurrentUserHelper`.
-- Uniqueness é **composta por usuário** (Usuário A pode ter o mesmo CPF que Usuário B em suas listas — cenário real).
+- Each entity carries `usuario_id` (FK). Repositories automatically filter via `CurrentUserHelper`.
+- Uniqueness is **composite per user** (User A can have the same CPF as User B in their own lists — a real-world scenario).
 
-### Segurança
-- BCrypt para hash de senhas (`spring-security-crypto`).
-- JWT HS256 com secret de 256 bits no `application.properties` (sobrescrito por `JWT_SECRET` em prod).
-- `SecurityFilterChain` stateless, sem CSRF (API REST).
-- Token vai no `Authorization: Bearer` header, persistido em `localStorage`.
-- `JwtAuthenticationFilter` popula `SecurityContext` antes de cada request autenticada.
-- Frontend: HTTP interceptor injeta token; resposta 401 limpa sessão e redireciona para `/login`.
+### Security
+- BCrypt for password hashing (`spring-security-crypto`).
+- JWT HS256 with 256-bit secret in `application.properties` (overridden by `JWT_SECRET` in production).
+- Stateless `SecurityFilterChain`, no CSRF (REST API).
+- Token in `Authorization: Bearer` header, persisted in `localStorage`.
+- `JwtAuthenticationFilter` populates `SecurityContext` before each authenticated request.
+- Frontend: HTTP interceptor injects the token; a 401 response clears the session and redirects to `/login`.
 
-### Armazenamento de imagens
-- BLOB diretamente no Oracle (`VARBINARY`/`BLOB`) — backup unificado, sem servidor de arquivos extra.
-- Frontend autentica fetch da imagem via `AuthImgDirective` (HttpClient + `responseType: 'blob'` + `URL.createObjectURL` com cleanup automático).
+### Image Storage
+- BLOBs stored directly in Oracle (`VARBINARY`/`BLOB`) — unified backup, no extra file server needed.
+- Frontend authenticates image fetching via `AuthImgDirective` (HttpClient + `responseType: 'blob'` + `URL.createObjectURL` with automatic cleanup).
 
-### Internacionalização
-- **ngx-translate v17** com loader HTTP carregando `public/i18n/{lang}.json`.
-- `LanguageService` gerencia idioma atual + persistência. Aplicado em `<html lang>` para acessibilidade.
-- Bootstrap `data-bs-theme` no `<html>` controla tema. Variáveis CSS customizadas (`--altis-bg`, `--altis-card-bg`) complementam.
+### Internationalization
+- **ngx-translate v17** with HTTP loader reading `public/i18n/{lang}.json`.
+- `LanguageService` manages the current language + persistence. Applied to `<html lang>` for accessibility.
+- Bootstrap `data-bs-theme` on `<html>` controls the theme. Custom CSS variables (`--altis-bg`, `--altis-card-bg`) complement it.
 
-### Animações
-- Quase tudo via **CSS transitions/keyframes** (performance > Angular animations).
-- `@media (prefers-reduced-motion: reduce)` desliga animações respeitando preferência do usuário.
+### Animations
+- Almost everything via **CSS transitions/keyframes** (performance over Angular animations).
+- `@media (prefers-reduced-motion: reduce)` disables animations, respecting the user's preference.
 
 ---
 
-## O que ficou de fora
+## What Was Left Out
 
-- **Testes automatizados**: priorizei volume de features para a avaliação. Estrutura DTO/Service deixa pronto para testar.
-- **Refresh token**: token expira em 24h; usuário precisa relogar. Para produção, implementar refresh.
-- **Compressão de imagens server-side**: upload aceita até 5MB sem redimensionar. Em produção, usar Imgproxy/Cloudinary.
-- **Histórico de likes** (quem deu like): contador agregado apenas, sem identificar usuário (sistema é mono-usuário por design — você curte suas próprias fotos para ranking).
-- **Migração de schema versionada**: usando `ddl-auto=update` para dev; em produção substituir por Flyway/Liquibase.
+- **Automated tests**: feature volume was prioritized for the evaluation. The DTO/Service structure is ready for testing.
+- **Refresh token**: token expires in 24h; user must log in again. Implement refresh for production.
+- **Server-side image compression**: uploads accepted up to 5MB without resizing. Use Imgproxy/Cloudinary in production.
+- **Likes history** (who liked what): aggregated counter only, without identifying the user (the system is single-user by design — you like your own photos for ranking purposes).
+- **Versioned schema migration**: using `ddl-auto=update` for dev; replace with Flyway/Liquibase in production.
+
+---
